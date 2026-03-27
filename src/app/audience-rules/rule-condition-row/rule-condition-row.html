@@ -1,0 +1,57 @@
+<div class="flex flex-wrap items-center gap-2 md:flex-nowrap">
+  <div class="min-w-[140px] flex-1">
+    <label class="sr-only" [for]="'field-' + condition().id">Field</label>
+    <select
+      class="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+      [id]="'field-' + condition().id"
+      [value]="condition().field"
+      (change)="patch({ field: $any($event.target).value })"
+    >
+      @for (f of fields; track f.value) {
+        <option [value]="f.value">{{ f.label }}</option>
+      }
+    </select>
+  </div>
+  <div class="min-w-[140px] flex-1">
+    <label class="sr-only" [for]="'op-' + condition().id">Operator</label>
+    <select
+      class="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+      [id]="'op-' + condition().id"
+      [value]="condition().operator"
+      (change)="patch({ operator: $any($event.target).value })"
+    >
+      @for (o of operators; track o.value) {
+        <option [value]="o.value">{{ o.label }}</option>
+      }
+    </select>
+  </div>
+  <div class="min-w-[120px] flex-[1.2]">
+    <label class="sr-only" [for]="'val-' + condition().id">Value</label>
+    @if (isDateField()) {
+      <input
+        class="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        [id]="'val-' + condition().id"
+        type="date"
+        [value]="condition().value"
+        (input)="patch({ value: $any($event.target).value })"
+      />
+    } @else {
+      <input
+        class="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        [id]="'val-' + condition().id"
+        type="text"
+        placeholder="Value"
+        [value]="condition().value"
+        (input)="patch({ value: $any($event.target).value })"
+      />
+    }
+  </div>
+  <button
+    type="button"
+    class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-red-200 bg-red-50 text-red-600 transition-colors hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-400"
+    (click)="removed.emit()"
+    aria-label="Remove condition"
+  >
+    <span class="text-lg leading-none" aria-hidden="true">×</span>
+  </button>
+</div>
