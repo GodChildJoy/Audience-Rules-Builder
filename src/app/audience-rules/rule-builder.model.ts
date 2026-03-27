@@ -70,12 +70,12 @@ export function getOperatorsForField(fieldId: string): OperatorDef[] {
   return getFieldDef(fieldId).operators;
 }
 
-export function createCondition(): Condition {
-  const defaultField = 'country';
-  const defaultOperator = getOperatorsForField(defaultField)[0]?.id ?? 'is';
+export function createCondition(fieldId = 'country'): Condition {
+  const selectedField = getFieldDef(fieldId).id;
+  const defaultOperator = getOperatorsForField(selectedField)[0]?.id ?? 'is';
   return {
     id: crypto.randomUUID(),
-    field: defaultField,
+    field: selectedField,
     operator: defaultOperator,
     value: '',
   };

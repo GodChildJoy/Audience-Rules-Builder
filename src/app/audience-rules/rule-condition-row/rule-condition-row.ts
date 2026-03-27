@@ -28,6 +28,10 @@ export class RuleConditionRow {
     this.patch({ field: fieldId, operator });
   }
 
+  protected isFieldDisabled(fieldId: string): boolean {
+    return this.ruleBuilder.isFieldUsedByOther(fieldId, this.condition().id);
+  }
+
   protected isDateField(): boolean {
     return this.condition().field === 'signupDate';
   }

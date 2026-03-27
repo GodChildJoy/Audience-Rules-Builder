@@ -50,9 +50,13 @@ export class RuleBuilderService {
   }
 
   addCondition(groupId: string): void {
+    const nextFieldId = this.findFirstUnusedFieldId();
+    if (!nextFieldId) {
+      return;
+    }
     this.updateGroup(groupId, (group) => ({
       ...group,
-      conditions: [...group.conditions, createCondition()],
+      conditions: [...group.conditions, createCondition(nextFieldId)],
     }));
   }
 
@@ -65,11 +69,15 @@ export class RuleBuilderService {
 
   getConditionErrors(condition: Condition): ConditionErrors {
     const errors: ConditionErrors = {};
+    const usageCounts = this.getFieldUsageCounts(this.root());
     const fieldExists = FIELD_OPTIONS.some((field) => field.id === condition.field);
     if (!fieldExists) {
       errors.field = 'Select a valid field.';
       errors.operator = 'Select a valid operator.';
       return errors;
+    }
+    if ((usageCounts.get(condition.field) ?? 0) > 1) {
+      errors.field = 'Field can only be selected once.';
     }
 
     const allowed = getOperatorsForField(condition.field);
@@ -91,6 +99,10 @@ export class RuleBuilderService {
     }
 
     return errors;
+  }
+
+  isFieldUsedByOther(fieldId: string, conditionId: string): boolean {
+    return this.collectConditions(this.root()).some((c) => c.id !== conditionId && c.field === fieldId);
   }
 
   saveRule(): void {
@@ -182,10 +194,12 @@ export class RuleBuilderService {
   }
 
   private createInitialRoot(): RuleGroup {
+    const firstField = FIELD_OPTIONS[0]?.id ?? 'country';
+    const secondField = FIELD_OPTIONS[1]?.id ?? firstField;
     return {
       id: crypto.randomUUID(),
       logic: 'AND',
-      conditions: [createCondition(), createCondition()],
+      conditions: [createCondition(firstField), createCondition(secondField)],
       groups: [createRuleGroup(false)],
     };
   }
@@ -205,5 +219,30 @@ export class RuleBuilderService {
     }
 
     return group.groups.every((child) => this.validateGroup(child));
+  }
+
+  private collectConditions(group: RuleGroup): Condition[] {
+    return [
+      ...group.conditions,
+      ...group.groups.flatMap((child) => this.collectConditions(child)),
+    ];
+  }
+
+  private getFieldUsageCounts(group: RuleGroup): Map<string, number> {
+    const counts = new Map<string, number>();
+    for (const condition of this.collectConditions(group)) {
+      counts.set(condition.field, (counts.get(condition.field) ?? 0) + 1);
+    }
+    return counts;
+  }
+
+  private findFirstUnusedFieldId(): string | null {
+    const used = new Set(this.collectConditions(this.root()).map((condition) => condition.field));
+    for (const field of FIELD_OPTIONS) {
+      if (!used.has(field.id)) {
+        return field.id;
+      }
+    }
+    return null;
   }
 }

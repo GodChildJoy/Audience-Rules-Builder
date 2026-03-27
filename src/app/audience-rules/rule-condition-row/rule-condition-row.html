@@ -16,7 +16,7 @@
       [attr.aria-invalid]="showValidation() && !!errors().field"
     >
       @for (f of fields; track f.id) {
-        <option [value]="f.id">{{ f.label }}</option>
+        <option [value]="f.id" [disabled]="isFieldDisabled(f.id)">{{ f.label }}</option>
       }
     </select>
   </div>
