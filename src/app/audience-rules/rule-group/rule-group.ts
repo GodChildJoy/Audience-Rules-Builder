@@ -23,4 +23,8 @@ export class RuleGroupComponent {
   protected addNestedCondition(): void {
     this.ruleBuilder.addCondition(this.groupId());
   }
+
+  protected addNestedGroup(): void {
+    this.ruleBuilder.addGroup(this.groupId());
+  }
 }

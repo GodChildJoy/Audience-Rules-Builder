@@ -34,10 +34,10 @@ export class RuleBuilderService {
   }
 
   removeCondition(groupId: string, conditionId: string): void {
-    this.updateGroup(groupId, (group) => ({
-      ...group,
-      conditions: group.conditions.filter((condition) => condition.id !== conditionId),
-    }));
+    const [nextRoot, updated] = this.removeConditionWithPrune(this.root(), groupId, conditionId, true);
+    if (updated) {
+      this.root.set(nextRoot);
+    }
   }
 
   addCondition(groupId: string): void {
@@ -103,6 +103,39 @@ export class RuleBuilderService {
     }
 
     return [{ ...group, groups: nextGroups }, true];
+  }
+
+  private removeConditionWithPrune(
+    group: RuleGroup,
+    groupId: string,
+    conditionId: string,
+    isRoot: boolean,
+  ): [RuleGroup, boolean, boolean] {
+    if (group.id === groupId) {
+      const nextConditions = group.conditions.filter((condition) => condition.id !== conditionId);
+      const nextGroup = { ...group, conditions: nextConditions };
+      const deleteSelf = !isRoot && nextConditions.length === 0;
+      return [nextGroup, nextConditions.length !== group.conditions.length, deleteSelf];
+    }
+
+    let didUpdate = false;
+    const nextChildren: RuleGroup[] = [];
+
+    for (const child of group.groups) {
+      const [nextChild, childUpdated, deleteChild] = this.removeConditionWithPrune(child, groupId, conditionId, false);
+      if (childUpdated || deleteChild) {
+        didUpdate = true;
+      }
+      if (!deleteChild) {
+        nextChildren.push(nextChild);
+      }
+    }
+
+    if (!didUpdate) {
+      return [group, false, false];
+    }
+
+    return [{ ...group, groups: nextChildren }, true, false];
   }
 
   private createInitialRoot(): RuleGroup {

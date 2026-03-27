@@ -14,13 +14,23 @@
   </div>
 
   @if (nested()) {
-    <button
-      type="button"
-      class="flex w-full items-center justify-center gap-2 rounded-md border border-dashed border-gray-300 bg-gray-50 px-3 py-2.5 text-sm font-medium text-gray-500 transition-colors hover:border-gray-400 hover:bg-gray-100 hover:text-gray-700"
-      (click)="addNestedCondition()"
-    >
-      <span class="text-base leading-none">+</span>
-      Add condition
-    </button>
+    <div class="flex flex-wrap gap-3">
+      <button
+        type="button"
+        class="inline-flex items-center gap-2 rounded-md border border-dashed border-gray-300 bg-gray-50 px-4 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:border-gray-400 hover:bg-gray-100"
+        (click)="addNestedCondition()"
+      >
+        <span class="text-base leading-none">+</span>
+        Add condition
+      </button>
+      <button
+        type="button"
+        class="inline-flex items-center gap-2 rounded-md border border-dashed border-gray-300 bg-gray-50 px-4 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:border-gray-400 hover:bg-gray-100"
+        (click)="addNestedGroup()"
+      >
+        <span class="text-base leading-none">+</span>
+        Add group
+      </button>
+    </div>
   }
 </div>
