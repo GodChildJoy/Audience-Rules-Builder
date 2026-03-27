@@ -1,12 +1,11 @@
-import { Component, computed, forwardRef, inject, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { LogicToggle } from '../logic-toggle/logic-toggle';
 import { RuleConditionRow } from '../rule-condition-row/rule-condition-row';
-import type { RuleGroup } from '../rule-builder.model';
 import { RuleBuilderService } from '../rule-builder.service';
 
 @Component({
   selector: 'app-rule-group',
-  imports: [LogicToggle, RuleConditionRow, forwardRef(() => RuleGroupComponent)],
+  imports: [LogicToggle, RuleConditionRow, RuleGroupComponent],
   templateUrl: './rule-group.html',
 })
 export class RuleGroupComponent {

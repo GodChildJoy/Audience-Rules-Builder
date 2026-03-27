@@ -6,10 +6,10 @@
       class="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
       [id]="'field-' + condition().id"
       [value]="condition().field"
-      (change)="patch({ field: $any($event.target).value })"
+      (change)="onFieldChange($any($event.target).value)"
     >
-      @for (f of fields; track f.value) {
-        <option [value]="f.value">{{ f.label }}</option>
+      @for (f of fields; track f.id) {
+        <option [value]="f.id">{{ f.label }}</option>
       }
     </select>
   </div>
@@ -21,8 +21,8 @@
       [value]="condition().operator"
       (change)="patch({ operator: $any($event.target).value })"
     >
-      @for (o of operators; track o.value) {
-        <option [value]="o.value">{{ o.label }}</option>
+      @for (o of getOperators(); track o.id) {
+        <option [value]="o.id">{{ o.label }}</option>
       }
     </select>
   </div>

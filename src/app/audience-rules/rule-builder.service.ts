@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { createCondition, createRuleGroup, type Condition, type LogicOperator, type RuleGroup } from './rule-builder.model';
+import { createCondition, createRuleGroup, getOperatorsForField, type Condition, type LogicOperator, type RuleGroup } from './rule-builder.model';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +19,16 @@ export class RuleBuilderService {
     this.updateGroup(groupId, (group) => ({
       ...group,
       conditions: group.conditions.map((condition) =>
-        condition.id === conditionId ? { ...condition, ...partial } : condition,
+        condition.id === conditionId
+          ? (() => {
+              const next = { ...condition, ...partial };
+              const allowed = getOperatorsForField(next.field);
+              if (!allowed.some((op) => op.id === next.operator)) {
+                next.operator = allowed[0]?.id ?? next.operator;
+              }
+              return next;
+            })()
+          : condition,
       ),
     }));
   }

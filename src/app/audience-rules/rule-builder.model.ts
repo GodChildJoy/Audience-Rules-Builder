@@ -14,27 +14,69 @@ export interface RuleGroup {
   groups: RuleGroup[];
 }
 
-export const FIELD_OPTIONS = [
-  { value: 'country', label: 'country' },
-  { value: 'plan', label: 'plan' },
-  { value: 'purchaseCount', label: 'purchaseCount' },
-  { value: 'signupDate', label: 'signupDate' },
-] as const;
+export interface OperatorDef {
+  id: string;
+  label: string;
+}
 
-export const OPERATOR_OPTIONS = [
-  { value: 'is', label: 'is' },
-  { value: 'is not', label: 'is not' },
-  { value: 'greater than', label: 'greater than' },
-  { value: 'less than', label: 'less than' },
-  { value: 'before', label: 'before' },
-  { value: 'after', label: 'after' },
-] as const;
+export interface FieldDef {
+  id: string;
+  label: string;
+  operators: OperatorDef[];
+}
+
+export const FIELD_OPTIONS: FieldDef[] = [
+  {
+    id: 'country',
+    label: 'country',
+    operators: [
+      { id: 'is', label: 'is' },
+      { id: 'is not', label: 'is not' },
+    ],
+  },
+  {
+    id: 'plan',
+    label: 'plan',
+    operators: [
+      { id: 'is', label: 'is' },
+      { id: 'is not', label: 'is not' },
+    ],
+  },
+  {
+    id: 'purchaseCount',
+    label: 'purchaseCount',
+    operators: [
+      { id: 'equals', label: 'equals' },
+      { id: 'greater than', label: 'greater than' },
+      { id: 'less than', label: 'less than' },
+    ],
+  },
+  {
+    id: 'signupDate',
+    label: 'signupDate',
+    operators: [
+      { id: 'before', label: 'before' },
+      { id: 'after', label: 'after' },
+      { id: 'on', label: 'on' },
+    ],
+  },
+];
+
+export function getFieldDef(fieldId: string): FieldDef {
+  return FIELD_OPTIONS.find((f) => f.id === fieldId) ?? FIELD_OPTIONS[0];
+}
+
+export function getOperatorsForField(fieldId: string): OperatorDef[] {
+  return getFieldDef(fieldId).operators;
+}
 
 export function createCondition(): Condition {
+  const defaultField = 'country';
+  const defaultOperator = getOperatorsForField(defaultField)[0]?.id ?? 'is';
   return {
     id: crypto.randomUUID(),
-    field: 'country',
-    operator: 'is',
+    field: defaultField,
+    operator: defaultOperator,
     value: '',
   };
 }
