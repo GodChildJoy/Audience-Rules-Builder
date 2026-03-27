@@ -1,13 +1,17 @@
 <div class="space-y-4" [class]="nested() ? 'rounded-lg border border-purple-200 bg-white p-4' : ''">
   <app-logic-toggle [groupId]="group().id" [logic]="group().logic" />
 
-  @for (c of group().conditions; track c.id) {
-    <app-rule-condition-row [groupId]="group().id" [condition]="c" />
-  }
+  <div class="space-y-3">
+    @for (c of group().conditions; track c.id) {
+      <app-rule-condition-row [groupId]="group().id" [condition]="c" />
+    }
+  </div>
 
-  @for (sub of group().groups; track sub.id) {
-    <app-rule-group [groupId]="sub.id" [nested]="true" />
-  }
+  <div class="space-y-3">
+    @for (sub of group().groups; track sub.id) {
+      <app-rule-group [groupId]="sub.id" [nested]="true" />
+    }
+  </div>
 
   @if (nested()) {
     <button
