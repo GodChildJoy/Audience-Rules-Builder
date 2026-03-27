@@ -5,7 +5,6 @@ import { FIELD_OPTIONS, OPERATOR_OPTIONS, type Condition } from '../rule-builder
   selector: 'app-rule-condition-row',
   imports: [],
   templateUrl: './rule-condition-row.html',
-  styleUrl: './rule-condition-row.css',
 })
 export class RuleConditionRow {
   readonly condition = input.required<Condition>();

@@ -5,7 +5,6 @@ import type { LogicOperator } from '../rule-builder.model';
   selector: 'app-logic-toggle',
   imports: [],
   templateUrl: './logic-toggle.html',
-  styleUrl: './logic-toggle.css',
 })
 export class LogicToggle {
   readonly logic = input.required<LogicOperator>();

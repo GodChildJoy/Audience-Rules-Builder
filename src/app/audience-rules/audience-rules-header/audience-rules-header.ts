@@ -4,7 +4,6 @@ import { Component, output } from '@angular/core';
   selector: 'app-audience-rules-header',
   imports: [],
   templateUrl: './audience-rules-header.html',
-  styleUrl: './audience-rules-header.css',
 })
 export class AudienceRulesHeader {
   readonly save = output<void>();

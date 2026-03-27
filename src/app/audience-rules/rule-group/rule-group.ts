@@ -7,7 +7,6 @@ import { createCondition, type Condition, type RuleGroup } from '../rule-builder
   selector: 'app-rule-group',
   imports: [LogicToggle, RuleConditionRow, forwardRef(() => RuleGroupComponent)],
   templateUrl: './rule-group.html',
-  styleUrl: './rule-group.css',
 })
 export class RuleGroupComponent {
   readonly group = input.required<RuleGroup>();

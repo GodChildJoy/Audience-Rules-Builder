@@ -6,6 +6,5 @@ import { AudienceRulesBuilder } from './audience-rules/audience-rules-builder/au
   selector: 'app-root',
   imports: [RouterOutlet, AudienceRulesBuilder],
   templateUrl: './app.html',
-  styleUrl: './app.css',
 })
 export class App {}

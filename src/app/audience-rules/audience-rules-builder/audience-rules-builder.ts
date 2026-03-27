@@ -7,7 +7,6 @@ import { createCondition, createRuleGroup, type RuleGroup } from '../rule-builde
   selector: 'app-audience-rules-builder',
   imports: [AudienceRulesHeader, RuleGroupComponent],
   templateUrl: './audience-rules-builder.html',
-  styleUrl: './audience-rules-builder.css',
 })
 export class AudienceRulesBuilder {
   /** Root rule tree; nested groups render recursively inside `app-rule-group`. */
