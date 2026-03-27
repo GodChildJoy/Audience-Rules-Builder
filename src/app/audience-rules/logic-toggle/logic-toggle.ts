@@ -1,5 +1,6 @@
-import { Component, input, output } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import type { LogicOperator } from '../rule-builder.model';
+import { RuleBuilderService } from '../rule-builder.service';
 
 @Component({
   selector: 'app-logic-toggle',
@@ -7,8 +8,9 @@ import type { LogicOperator } from '../rule-builder.model';
   templateUrl: './logic-toggle.html',
 })
 export class LogicToggle {
+  readonly groupId = input.required<string>();
   readonly logic = input.required<LogicOperator>();
-  readonly logicChange = output<LogicOperator>();
+  private readonly ruleBuilder = inject(RuleBuilderService);
 
   protected readonly helper: Record<LogicOperator, string> = {
     AND: 'ALL CONDITIONS MUST MATCH',
@@ -17,7 +19,7 @@ export class LogicToggle {
 
   protected setLogic(next: LogicOperator): void {
     if (next !== this.logic()) {
-      this.logicChange.emit(next);
+      this.ruleBuilder.setGroupLogic(this.groupId(), next);
     }
   }
 }

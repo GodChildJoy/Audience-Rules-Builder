@@ -1,4 +1,5 @@
-import { Component, output } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { RuleBuilderService } from '../rule-builder.service';
 
 @Component({
   selector: 'app-audience-rules-header',
@@ -6,5 +7,9 @@ import { Component, output } from '@angular/core';
   templateUrl: './audience-rules-header.html',
 })
 export class AudienceRulesHeader {
-  readonly save = output<void>();
+  private readonly ruleBuilder = inject(RuleBuilderService);
+
+  protected onSave(): void {
+    this.ruleBuilder.saveRule();
+  }
 }
