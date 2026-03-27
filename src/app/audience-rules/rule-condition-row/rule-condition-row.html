@@ -3,10 +3,17 @@
   <div class="min-w-[140px] flex-1">
     <label class="sr-only" [for]="'field-' + condition().id">Field</label>
     <select
-      class="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+      class="w-full rounded-md border bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:outline-none focus:ring-1"
+      [class.border-gray-300]="!showValidation() || !errors().field"
+      [class.focus:border-blue-500]="!showValidation() || !errors().field"
+      [class.focus:ring-blue-500]="!showValidation() || !errors().field"
+      [class.border-red-300]="showValidation() && !!errors().field"
+      [class.focus:border-red-500]="showValidation() && !!errors().field"
+      [class.focus:ring-red-500]="showValidation() && !!errors().field"
       [id]="'field-' + condition().id"
       [value]="condition().field"
       (change)="onFieldChange($any($event.target).value)"
+      [attr.aria-invalid]="showValidation() && !!errors().field"
     >
       @for (f of fields; track f.id) {
         <option [value]="f.id">{{ f.label }}</option>
@@ -16,10 +23,17 @@
   <div class="min-w-[140px] flex-1">
     <label class="sr-only" [for]="'op-' + condition().id">Operator</label>
     <select
-      class="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+      class="w-full rounded-md border bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:outline-none focus:ring-1"
+      [class.border-gray-300]="!showValidation() || !errors().operator"
+      [class.focus:border-blue-500]="!showValidation() || !errors().operator"
+      [class.focus:ring-blue-500]="!showValidation() || !errors().operator"
+      [class.border-red-300]="showValidation() && !!errors().operator"
+      [class.focus:border-red-500]="showValidation() && !!errors().operator"
+      [class.focus:ring-red-500]="showValidation() && !!errors().operator"
       [id]="'op-' + condition().id"
       [value]="condition().operator"
       (change)="patch({ operator: $any($event.target).value })"
+      [attr.aria-invalid]="showValidation() && !!errors().operator"
     >
       @for (o of getOperators(); track o.id) {
         <option [value]="o.id">{{ o.label }}</option>
@@ -30,20 +44,34 @@
     <label class="sr-only" [for]="'val-' + condition().id">Value</label>
     @if (isDateField()) {
       <input
-        class="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        class="w-full rounded-md border bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:outline-none focus:ring-1"
+        [class.border-gray-300]="!showValidation() || !errors().value"
+        [class.focus:border-blue-500]="!showValidation() || !errors().value"
+        [class.focus:ring-blue-500]="!showValidation() || !errors().value"
+        [class.border-red-300]="showValidation() && !!errors().value"
+        [class.focus:border-red-500]="showValidation() && !!errors().value"
+        [class.focus:ring-red-500]="showValidation() && !!errors().value"
         [id]="'val-' + condition().id"
         type="date"
         [value]="condition().value"
         (input)="patch({ value: $any($event.target).value })"
+        [attr.aria-invalid]="showValidation() && !!errors().value"
       />
     } @else {
       <input
-        class="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        class="w-full rounded-md border bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:outline-none focus:ring-1"
+        [class.border-gray-300]="!showValidation() || !errors().value"
+        [class.focus:border-blue-500]="!showValidation() || !errors().value"
+        [class.focus:ring-blue-500]="!showValidation() || !errors().value"
+        [class.border-red-300]="showValidation() && !!errors().value"
+        [class.focus:border-red-500]="showValidation() && !!errors().value"
+        [class.focus:ring-red-500]="showValidation() && !!errors().value"
         [id]="'val-' + condition().id"
         type="text"
         placeholder="Value"
         [value]="condition().value"
         (input)="patch({ value: $any($event.target).value })"
+        [attr.aria-invalid]="showValidation() && !!errors().value"
       />
     }
   </div>
@@ -56,4 +84,7 @@
     <span class="text-lg leading-none" aria-hidden="true">×</span>
   </button>
   </div>
+  @if (showValidation() && firstError()) {
+    <p class="mt-1 text-xs font-medium text-red-600">{{ firstError() }}</p>
+  }
 </div>

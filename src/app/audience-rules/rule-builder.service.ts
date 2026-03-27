@@ -1,11 +1,20 @@
-import { Injectable, signal } from '@angular/core';
-import { createCondition, createRuleGroup, getOperatorsForField, type Condition, type LogicOperator, type RuleGroup } from './rule-builder.model';
+import { computed, Injectable, signal } from '@angular/core';
+import { FIELD_OPTIONS, createCondition, createRuleGroup, getOperatorsForField, type Condition, type LogicOperator, type RuleGroup } from './rule-builder.model';
+
+export interface ConditionErrors {
+  field?: string;
+  operator?: string;
+  value?: string;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class RuleBuilderService {
   readonly root = signal<RuleGroup>(this.createInitialRoot());
+  readonly showValidation = signal(false);
+  readonly isValid = computed(() => this.validateGroup(this.root()));
+  readonly hasValidationErrors = computed(() => this.showValidation() && !this.isValid());
 
   findGroup(groupId: string): RuleGroup | null {
     return this.findGroupInTree(this.root(), groupId);
@@ -54,7 +63,41 @@ export class RuleBuilderService {
     }));
   }
 
+  getConditionErrors(condition: Condition): ConditionErrors {
+    const errors: ConditionErrors = {};
+    const fieldExists = FIELD_OPTIONS.some((field) => field.id === condition.field);
+    if (!fieldExists) {
+      errors.field = 'Select a valid field.';
+      errors.operator = 'Select a valid operator.';
+      return errors;
+    }
+
+    const allowed = getOperatorsForField(condition.field);
+    if (!allowed.some((op) => op.id === condition.operator)) {
+      errors.operator = 'Select a valid operator for this field.';
+    }
+
+    if (!condition.value.trim()) {
+      errors.value = 'Value is required.';
+      return errors;
+    }
+
+    if (condition.field === 'purchaseCount' && Number.isNaN(Number(condition.value))) {
+      errors.value = 'Value must be a number.';
+    }
+
+    if (condition.field === 'signupDate' && Number.isNaN(Date.parse(condition.value))) {
+      errors.value = 'Value must be a valid date.';
+    }
+
+    return errors;
+  }
+
   saveRule(): void {
+    this.showValidation.set(true);
+    if (!this.isValid()) {
+      return;
+    }
     console.log('Audience rule payload', this.root());
   }
 
@@ -145,5 +188,22 @@ export class RuleBuilderService {
       conditions: [createCondition(), createCondition()],
       groups: [createRuleGroup(false)],
     };
+  }
+
+  private validateGroup(group: RuleGroup): boolean {
+    if (group.conditions.length === 0) {
+      return false;
+    }
+
+    const conditionsValid = group.conditions.every((condition) => {
+      const errors = this.getConditionErrors(condition);
+      return !errors.field && !errors.operator && !errors.value;
+    });
+
+    if (!conditionsValid) {
+      return false;
+    }
+
+    return group.groups.every((child) => this.validateGroup(child));
   }
 }

@@ -1,7 +1,12 @@
 <header
   class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 bg-white px-6 py-4"
 >
-  <h1 class="text-lg font-semibold tracking-tight text-gray-800">Audience Rules</h1>
+  <div>
+    <h1 class="text-lg font-semibold tracking-tight text-gray-800">Audience Rules</h1>
+    @if (hasValidationErrors()) {
+      <p class="mt-1 text-xs font-medium text-red-600">Fix validation errors before saving.</p>
+    }
+  </div>
   <button
     type="button"
     class="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"

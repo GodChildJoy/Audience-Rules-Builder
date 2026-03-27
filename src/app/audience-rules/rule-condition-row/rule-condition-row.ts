@@ -1,6 +1,6 @@
 import { Component, inject, input } from '@angular/core';
 import { FIELD_OPTIONS, getOperatorsForField, type Condition, type OperatorDef } from '../rule-builder.model';
-import { RuleBuilderService } from '../rule-builder.service';
+import { RuleBuilderService, type ConditionErrors } from '../rule-builder.service';
 
 @Component({
   selector: 'app-rule-condition-row',
@@ -11,6 +11,7 @@ export class RuleConditionRow {
   readonly groupId = input.required<string>();
   readonly condition = input.required<Condition>();
   private readonly ruleBuilder = inject(RuleBuilderService);
+  protected readonly showValidation = this.ruleBuilder.showValidation;
 
   protected readonly fields = FIELD_OPTIONS;
   protected getOperators(): OperatorDef[] {
@@ -29,6 +30,15 @@ export class RuleConditionRow {
 
   protected isDateField(): boolean {
     return this.condition().field === 'signupDate';
+  }
+
+  protected errors(): ConditionErrors {
+    return this.ruleBuilder.getConditionErrors(this.condition());
+  }
+
+  protected firstError(): string | undefined {
+    const errors = this.errors();
+    return errors.field ?? errors.operator ?? errors.value;
   }
 
   protected remove(): void {
