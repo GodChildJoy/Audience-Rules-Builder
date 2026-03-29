@@ -11,6 +11,9 @@ export interface ConditionErrors {
   providedIn: 'root',
 })
 export class RuleBuilderService {
+  /** Increments on each successful save; used for console payload `Audience segment ${n}`. */
+  private nextSaveAudienceSegmentIndex = 1;
+
   readonly root = signal<RuleGroup>(this.createInitialRoot());
   readonly showValidation = signal(false);
   readonly isValid = computed(() => this.validateGroup(this.root()));
@@ -110,7 +113,14 @@ export class RuleBuilderService {
     if (!this.isValid()) {
       return;
     }
-    console.log('Audience rule payload', this.root());
+    const name = `Audience segment ${this.nextSaveAudienceSegmentIndex}`;
+    this.nextSaveAudienceSegmentIndex += 1;
+    const payload = {
+      name,
+      root: structuredClone(this.root()),
+      savedAt: new Date().toISOString(),
+    };
+    console.log('Audience rule payload', payload);
   }
 
   private updateGroup(groupId: string, updater: (group: RuleGroup) => RuleGroup): void {
