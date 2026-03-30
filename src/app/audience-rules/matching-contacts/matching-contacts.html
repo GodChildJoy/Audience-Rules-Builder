@@ -20,7 +20,7 @@
   </div>
 
   @if (error()) {
-    <p class="text-xs font-medium text-red-600">{{ error() }}</p>
+    <p class="arb-text-error">{{ error() }}</p>
   }
 
   @if (loading()) {
@@ -35,8 +35,8 @@
             {{ initials(m.name) }}
           </span>
           <div class="arb-contact-meta">
-            <p class="truncate text-sm font-medium leading-tight text-gray-800">{{ m.name }}</p>
-            <p class="truncate text-xs leading-tight text-gray-500">{{ m.email }}</p>
+            <p class="arb-contact-line-primary">{{ m.name }}</p>
+            <p class="arb-contact-line-secondary">{{ m.email }}</p>
           </div>
         </div>
       }
@@ -44,10 +44,10 @@
   }
 
   @if (matches() !== null && matches()!.length === 0 && !loading()) {
-    <p class="text-sm text-gray-500">No contacts match this rule.</p>
+    <p class="arb-text-muted-body">No contacts match this rule.</p>
   }
 
   @if (matches() === null && !error() && !loading()) {
-    <p class="text-xs text-gray-500">Run preview to see who matches your current rule.</p>
+    <p class="arb-text-muted">Run preview to see who matches your current rule.</p>
   }
 </div>

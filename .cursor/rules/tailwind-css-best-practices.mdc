@@ -1,0 +1,94 @@
+---
+description: Comprehensive Tailwind CSS guide — organization, performance, security, pitfalls, and tooling for scalable maintainable projects.
+globs: "**/*.{html,js,jsx,ts,tsx,vue}"
+alwaysApply: false
+---
+
+# Tailwind CSS — Best Practices
+
+## Configuration and production CSS
+
+- **Content scanning (Tailwind v3+):** Configure the `content` array in `tailwind.config` so unused utilities are tree-shaken from production CSS. In Tailwind v2 this was `purge`; v3+ uses `content` with the same intent.
+
+```javascript
+// tailwind.config.js — Tailwind v3+
+module.exports = {
+  content: [
+    './src/**/*.{html,js,jsx,ts,tsx,vue}',
+    './public/index.html',
+  ],
+  darkMode: 'media', // or 'class' | false
+  theme: { extend: {} },
+  plugins: [],
+};
+```
+
+- **Single source of truth:** Customize colors, spacing, typography, breakpoints, and shadows in `theme.extend`. Avoid one-off magic values in markup when a token will repeat.
+- **`theme()`:** In custom CSS or JS, read values from the theme so refactors propagate everywhere.
+
+## Layout, responsiveness, and design system
+
+- **Mobile-first:** Default styles for the smallest breakpoint; add `sm:`, `md:`, `lg:`, `xl:`, `2xl:` as the layout grows.
+- **Design system:** Map brand tokens into `tailwind.config` once; components consume utilities derived from those tokens.
+- **Prebuilt UI:** Tailwind UI or internal component libraries speed delivery; customize to match tokens. Document shared components (e.g. Storybook) so class patterns stay consistent.
+
+## Components and class strategy
+
+- **Decompose UI:** Small reusable components with predictable props; avoid copying the same 15-class string across files—extract with `@apply` or a shared partial.
+- **Utility-first, then abstract:** Prefer utilities; when a pattern repeats, use a semantic class plus `@apply` (e.g. `.btn-primary`) so updates happen in one place.
+- **Custom utilities:** Add recurring non-token patterns via `theme.extend` (spacing, colors, keyframes) or a small plugin when a single class should encode a pattern.
+- **Inline styles:** Avoid except for truly dynamic values that cannot be expressed as utilities or CSS variables; utilities cover most static styling needs.
+
+## CSS layering and Tailwind features
+
+- **`@layer`:** Put base resets, component bundles, and custom utilities in `components` / `utilities` layers so specificity stays predictable alongside Tailwind’s layers.
+- **Variants:** Use `hover:`, `focus:`, `focus-visible:`, `active:`, `disabled:`, `dark:`, etc. Extend `variants` / `plugins` when product needs custom state selectors.
+- **Arbitrary values:** Bracket syntax (`w-[23px]`, `top-[13px]`) is fine for edge cases; overuse makes designs untraceable—promote repeats into `theme.extend`.
+
+## Performance
+
+- Correct **`content`** globs → smallest production CSS; wrong globs → missing styles or bloat.
+- **JIT** (default in v3+) keeps dev builds fast and generates only requested utilities.
+- **Runtime perf:** Large class lists on one node can hurt readability more than CPU; still prefer splitting markup or using `@apply` for clarity. Optimize images, code-split JS, and virtualize long lists where needed—Tailwind does not replace those.
+
+## Code organization
+
+- **Common layouts:** `src/css/` or `styles/` for entry Tailwind file and global layers; `src/components/` for UI; layout shells (header, nav, footer) as separate components when the app is large enough to warrant it.
+- **Naming:** Consistent file names (`button.component.ts`, `header.css`) and predictable folder boundaries.
+- **Modules:** Optional `@import` of feature CSS into the main Tailwind entry file; keep imports ordered (base → components → utilities).
+- **Tests:** Colocate or mirror `*.spec.ts` / `*.test.tsx` next to components or under `__tests__` per project convention.
+
+## Patterns and anti-patterns
+
+| Prefer | Avoid |
+|--------|--------|
+| Tokens + utilities | Hardcoded hex/rpx scattered in class strings |
+| `content` paths for all template sources | Shipping full prebuilt CSS without scanning |
+| `@apply` for stable repeated clusters | Re-implementing Tailwind in bespoke CSS |
+| Documented shared components | One-off divergent “almost the same” buttons |
+
+- **State-driven styling:** Toggle classes from component state or a store (Redux, Zustand, signals, etc.); keep the mapping between state and classes explicit and easy to audit.
+
+## Security
+
+- Tailwind does not mitigate **XSS**, **CSRF**, or **injection** by itself. Sanitize or escape HTML; validate input; use HTTPS; implement auth correctly.
+- **Class names from user input:** Avoid building class strings directly from unsanitized user data (theoretical class-pollution / unexpected styling). Prefer allowlists when dynamic classes are required.
+
+## Testing
+
+- **Unit:** Components and class-mapping helpers in isolation.
+- **Integration:** Feature flows with real DOM or testing-library.
+- **E2E:** Critical paths in a browser. Use mocks for network/time where appropriate.
+
+## Pitfalls and debugging
+
+- **Production missing styles:** `content` globs omit new folders or alternate extensions—add them and rebuild.
+- **Overrides:** Understand cascade and `@layer` before chaining `!` important; fix order or specificity instead of fighting Tailwind defaults blindly.
+- **Debug:** Use devtools to inspect computed styles; verify the generated class exists in the built CSS when something “does nothing.”
+
+## Tooling
+
+- **Editor:** Tailwind CSS IntelliSense for class completion and lint hints.
+- **Build:** PostCSS with `tailwindcss` and `autoprefixer` in typical setups.
+- **Lint:** `eslint-plugin-tailwindcss` for class sorting and invalid utilities where configured.
+- **CI/CD:** Lint, test, and production build on every merge; fail on errors before deploy.

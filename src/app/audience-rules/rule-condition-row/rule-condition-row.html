@@ -1,6 +1,6 @@
 <div class="py-1">
   <div class="flex flex-wrap items-center gap-2 md:flex-nowrap">
-  <div class="min-w-[140px] flex-1">
+  <div class="min-w-arb-field flex-1">
     <label class="sr-only" [for]="'field-' + condition().id">Field</label>
     <select
       class="arb-field-control"
@@ -20,7 +20,7 @@
       }
     </select>
   </div>
-  <div class="min-w-[140px] flex-1">
+  <div class="min-w-arb-field flex-1">
     <label class="sr-only" [for]="'op-' + condition().id">Operator</label>
     <select
       class="arb-field-control"
@@ -40,7 +40,7 @@
       }
     </select>
   </div>
-  <div class="min-w-[120px] flex-[1.2]">
+  <div class="min-w-arb-value flex-[1.2]">
     <label class="sr-only" [for]="'val-' + condition().id">Value</label>
     @if (isDateField()) {
       <input
@@ -85,6 +85,6 @@
   </button>
   </div>
   @if (showValidation() && firstError()) {
-    <p class="mt-1 text-xs font-medium text-red-600">{{ firstError() }}</p>
+    <p class="arb-alert-error">{{ firstError() }}</p>
   }
 </div>

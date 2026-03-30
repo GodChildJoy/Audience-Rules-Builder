@@ -4,14 +4,14 @@
       <div class="space-y-4">
         <div class="flex items-center gap-3">
           <span class="arb-spinner-blue-lg" aria-hidden="true"></span>
-          <span class="text-sm font-medium text-gray-600">{{ message() }}</span>
+          <span class="arb-loading-message">{{ message() }}</span>
         </div>
         <ul class="space-y-3">
           @for (row of [1, 2, 3]; track row) {
             <li class="arb-loading-list-item" aria-hidden="true">
               <div class="space-y-3">
                 <div class="app-loading-shimmer h-4 max-w-xs rounded-md"></div>
-                <div class="app-loading-shimmer h-3 max-w-[200px] rounded-md opacity-80"></div>
+                <div class="app-loading-shimmer h-3 max-w-arb-contact rounded-md opacity-80"></div>
                 <div class="app-loading-shimmer h-3 max-w-sm rounded-md opacity-70"></div>
               </div>
             </li>
@@ -23,12 +23,12 @@
       <div class="space-y-4">
         <div class="flex items-center gap-2">
           <span class="arb-spinner-blue" aria-hidden="true"></span>
-          <span class="text-xs font-medium text-gray-600">{{ message() }}</span>
+          <span class="arb-loading-message-compact">{{ message() }}</span>
         </div>
         <div class="flex flex-wrap gap-2">
           @for (chip of [1, 2, 3, 4, 5]; track chip) {
             <div
-              class="app-loading-shimmer h-10 w-[132px] rounded-full"
+              class="app-loading-shimmer h-10 w-arb-chip rounded-full"
               aria-hidden="true"
             ></div>
           }
@@ -38,7 +38,7 @@
     @default {
       <div class="flex items-center gap-2">
         <span class="arb-spinner-blue" aria-hidden="true"></span>
-        <span class="text-xs text-gray-500">{{ message() }}</span>
+        <span class="arb-loading-hint">{{ message() }}</span>
       </div>
     }
   }

@@ -1,162 +1,322 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global styles — Tailwind v4 + Audience Rules Builder tokens */
 
 @import 'tailwindcss';
 
-@keyframes app-loading-shimmer {
-  0% {
-    background-position: 100% 50%;
+/* Design tokens (semantic aliases + layout-specific sizes). Prefer these over one-off arbitrary values. */
+@theme {
+  --color-arb-canvas: var(--color-gray-100);
+  --color-arb-elevated: var(--color-white);
+  --color-arb-border: var(--color-gray-200);
+  --color-arb-border-subtle: var(--color-gray-100);
+  --color-arb-text: var(--color-gray-800);
+  --color-arb-text-strong: var(--color-gray-900);
+  --color-arb-primary: var(--color-blue-600);
+  --color-arb-primary-hover: var(--color-blue-700);
+  --color-arb-primary-ring: var(--color-blue-500);
+  --color-arb-nested-ring: var(--color-purple-200);
+
+  --min-width-arb-field: 140px;
+  --min-width-arb-value: 120px;
+  --width-arb-chip: 132px;
+  --max-width-arb-contact: 200px;
+  --max-width-arb-contact-sm: 240px;
+
+  --background-size-app-loading-shimmer: 220% 100%;
+
+  --animate-app-loading-shimmer: app-loading-shimmer 1.7s ease-in-out infinite;
+
+  @keyframes app-loading-shimmer {
+    0% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: -100% 50%;
+    }
   }
-  100% {
-    background-position: -100% 50%;
+}
+
+@layer components {
+  .app-loading-shimmer {
+    @apply bg-[length:var(--background-size-app-loading-shimmer)];
+    background-image: linear-gradient(
+      90deg,
+      rgb(229 231 235 / 0.85) 0%,
+      rgb(243 244 246) 45%,
+      rgb(249 250 251) 50%,
+      rgb(243 244 246) 55%,
+      rgb(229 231 235 / 0.85) 100%
+    );
+    animation: var(--animate-app-loading-shimmer);
   }
-}
 
-.app-loading-shimmer {
-  @apply bg-[length:220%_100%];
-  background-image: linear-gradient(
-    90deg,
-    rgb(229 231 235 / 0.85) 0%,
-    rgb(243 244 246) 45%,
-    rgb(249 250 251) 50%,
-    rgb(243 244 246) 55%,
-    rgb(229 231 235 / 0.85) 100%
-  );
-  animation: app-loading-shimmer 1.7s ease-in-out infinite;
-}
+  .arb-page {
+    @apply min-h-screen bg-arb-canvas;
+  }
 
-/* Shared UI — Tailwind @apply (Audience Rules Builder) */
-.arb-page {
-  @apply min-h-screen bg-gray-100;
-}
+  .arb-page-inner {
+    @apply mx-auto max-w-4xl space-y-6 p-6;
+  }
 
-.arb-page-inner {
-  @apply mx-auto max-w-4xl space-y-6 p-6;
-}
+  .arb-card {
+    @apply overflow-hidden rounded-lg border border-arb-border bg-arb-elevated shadow-sm;
+  }
 
-.arb-card {
-  @apply overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm;
-}
+  .arb-section-muted {
+    @apply space-y-6 bg-gray-50/80 px-6 py-6;
+  }
 
-.arb-section-muted {
-  @apply space-y-6 bg-gray-50/80 px-6 py-6;
-}
+  .arb-section-muted-continued {
+    @apply border-t border-arb-border bg-gray-50/80 px-6 py-6;
+  }
 
-.arb-section-muted-continued {
-  @apply border-t border-gray-200 bg-gray-50/80 px-6 py-6;
-}
+  .arb-card-footer-actions {
+    @apply flex flex-wrap gap-3 border-t border-arb-border bg-arb-elevated px-6 py-4;
+  }
 
-.arb-card-footer-actions {
-  @apply flex flex-wrap gap-3 border-t border-gray-200 bg-white px-6 py-4;
-}
+  .arb-btn-dashed {
+    @apply inline-flex items-center gap-2 rounded-md border border-dashed border-gray-300 bg-gray-50 px-4 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:border-gray-400 hover:bg-gray-100;
+  }
 
-.arb-btn-dashed {
-  @apply inline-flex items-center gap-2 rounded-md border border-dashed border-gray-300 bg-gray-50 px-4 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:border-gray-400 hover:bg-gray-100;
-}
+  .arb-btn-primary {
+    @apply inline-flex min-w-[7.5rem] items-center justify-center gap-2 rounded-md bg-arb-primary px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-arb-primary-hover focus:outline-none focus:ring-2 focus:ring-arb-primary-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-80;
+  }
 
-.arb-btn-primary {
-  @apply inline-flex min-w-[7.5rem] items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-80;
-}
+  .arb-btn-preview {
+    @apply inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 bg-arb-elevated px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-arb-primary-ring focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50;
+  }
 
-.arb-btn-preview {
-  @apply inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50;
-}
+  .arb-btn-delete {
+    @apply inline-flex shrink-0 items-center justify-center gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-400 disabled:cursor-not-allowed disabled:opacity-50;
+  }
 
-.arb-btn-delete {
-  @apply inline-flex shrink-0 items-center justify-center gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-400 disabled:cursor-not-allowed disabled:opacity-50;
-}
+  .arb-field-control {
+    @apply w-full rounded-md border border-gray-300 bg-arb-elevated px-3 py-2 text-sm text-arb-text shadow-sm focus:outline-none focus:ring-1 focus:ring-arb-primary-ring;
+  }
 
-.arb-field-control {
-  @apply w-full rounded-md border bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:outline-none focus:ring-1;
-}
+  .arb-btn-remove {
+    @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-red-200 bg-red-50 text-red-600 transition-colors hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-400;
+  }
 
-.arb-btn-remove {
-  @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-red-200 bg-red-50 text-red-600 transition-colors hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-400;
-}
+  .arb-nested-group {
+    @apply rounded-lg border border-arb-nested-ring bg-arb-elevated p-4;
+  }
 
-.arb-nested-group {
-  @apply rounded-lg border border-purple-200 bg-white p-4;
-}
+  .arb-panel-header {
+    @apply flex flex-wrap items-center justify-between gap-4 border-b border-arb-border bg-arb-elevated px-6 py-4;
+  }
 
-.arb-panel-header {
-  @apply flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 bg-white px-6 py-4;
-}
+  .arb-list-panel-header {
+    @apply border-b border-arb-border bg-arb-elevated px-6 py-4;
+  }
 
-.arb-list-panel-header {
-  @apply border-b border-gray-200 bg-white px-6 py-4;
-}
+  .arb-title-page {
+    @apply text-lg font-semibold tracking-tight text-arb-text;
+  }
 
-.arb-title-page {
-  @apply text-lg font-semibold tracking-tight text-gray-800;
-}
+  .arb-section-title {
+    @apply text-base font-semibold tracking-tight text-arb-text-strong;
+  }
 
-.arb-section-title {
-  @apply text-base font-semibold tracking-tight text-gray-900;
-}
+  .arb-list-heading {
+    @apply text-lg font-semibold tracking-tight text-arb-text;
+  }
 
-.arb-list-heading {
-  @apply text-lg font-semibold tracking-tight text-gray-800;
-}
+  .arb-badge-count {
+    @apply inline-flex rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800;
+  }
 
-.arb-badge-count {
-  @apply inline-flex rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800;
-}
+  .arb-contact-chip {
+    @apply inline-flex max-w-full items-center gap-2 rounded-full bg-gray-100 py-2 pl-2 pr-4 shadow-sm ring-1 ring-gray-200/80;
+  }
 
-.arb-contact-chip {
-  @apply inline-flex max-w-full items-center gap-2 rounded-full bg-gray-100 py-2 pl-2 pr-4 shadow-sm ring-1 ring-gray-200/80;
-}
+  .arb-contact-avatar {
+    @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-semibold text-blue-700;
+  }
 
-.arb-contact-avatar {
-  @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-semibold text-blue-700;
-}
+  .arb-contact-meta {
+    @apply min-w-0 max-w-arb-contact sm:max-w-arb-contact-sm;
+  }
 
-.arb-contact-meta {
-  @apply min-w-0 max-w-[200px] sm:max-w-[240px];
-}
+  .arb-rule-row {
+    @apply overflow-hidden rounded-md border border-arb-border bg-arb-elevated shadow-sm;
+  }
 
-.arb-rule-row {
-  @apply overflow-hidden rounded-md border border-gray-200 bg-white shadow-sm;
-}
+  .arb-rule-row-header {
+    @apply flex flex-wrap items-start justify-between gap-3 border-b border-arb-border-subtle px-4 py-3;
+  }
 
-.arb-rule-row-header {
-  @apply flex flex-wrap items-start justify-between gap-3 border-b border-gray-100 px-4 py-3;
-}
+  .arb-details-summary {
+    @apply cursor-pointer list-none px-4 py-2 text-xs font-medium text-blue-600 hover:bg-gray-50 hover:text-blue-700 [&::-webkit-details-marker]:hidden;
+  }
 
-.arb-details-summary {
-  @apply cursor-pointer list-none px-4 py-2 text-xs font-medium text-blue-600 hover:bg-gray-50 hover:text-blue-700 [&::-webkit-details-marker]:hidden;
-}
+  .arb-details-body {
+    @apply max-h-96 overflow-y-auto border-t border-arb-border-subtle bg-gray-50/90 p-4;
+  }
 
-.arb-details-body {
-  @apply max-h-96 overflow-y-auto border-t border-gray-100 bg-gray-50/90 p-4;
-}
+  .arb-logic-shell {
+    @apply inline-flex rounded-md border border-arb-border bg-gray-50 p-0.5;
+  }
 
-.arb-logic-shell {
-  @apply inline-flex rounded-md border border-gray-200 bg-gray-50 p-0.5;
-}
+  .arb-logic-btn {
+    @apply rounded px-3 py-1.5 font-medium transition-colors;
+  }
 
-.arb-logic-btn {
-  @apply rounded px-3 py-1.5 font-medium transition-colors;
-}
+  .arb-spinner-white,
+  .arb-spinner-blue,
+  .arb-spinner-blue-sm,
+  .arb-spinner-blue-lg,
+  .arb-spinner-red-sm {
+    @apply inline-block shrink-0 animate-spin rounded-full border-2;
+  }
 
-.arb-spinner-white {
-  @apply inline-block size-4 shrink-0 animate-spin rounded-full border-2 border-white/35 border-t-white;
-}
+  .arb-spinner-white {
+    @apply border-white/35 border-t-white;
+  }
 
-.arb-spinner-blue-sm {
-  @apply inline-block size-3.5 shrink-0 animate-spin rounded-full border-2 border-gray-200 border-t-blue-600;
-}
+  .arb-spinner-blue-sm {
+    @apply size-3.5 border-gray-200 border-t-blue-600;
+  }
 
-.arb-spinner-blue {
-  @apply inline-block size-4 shrink-0 animate-spin rounded-full border-2 border-gray-200 border-t-blue-600;
-}
+  .arb-spinner-blue {
+    @apply size-4 border-gray-200 border-t-blue-600;
+  }
 
-.arb-spinner-blue-lg {
-  @apply inline-block size-5 shrink-0 animate-spin rounded-full border-2 border-gray-200 border-t-blue-600;
-}
+  .arb-spinner-blue-lg {
+    @apply size-5 border-gray-200 border-t-blue-600;
+  }
 
-.arb-spinner-red-sm {
-  @apply inline-block size-3.5 shrink-0 animate-spin rounded-full border-2 border-red-200 border-t-red-600;
-}
+  .arb-spinner-red-sm {
+    @apply size-3.5 border-red-200 border-t-red-600;
+  }
 
-.arb-loading-list-item {
-  @apply overflow-hidden rounded-md border border-gray-100 bg-white p-4 shadow-sm;
+  .arb-loading-list-item {
+    @apply overflow-hidden rounded-md border border-arb-border-subtle bg-arb-elevated p-4 shadow-sm;
+  }
+
+  /* Typography & inline patterns */
+  .arb-kicker {
+    @apply text-xs font-medium uppercase tracking-wide text-gray-500;
+  }
+
+  .arb-text-error {
+    @apply text-xs font-medium text-red-600;
+  }
+
+  .arb-alert-error {
+    @apply mt-1 text-xs font-medium text-red-600;
+  }
+
+  .arb-text-muted {
+    @apply text-xs text-gray-500;
+  }
+
+  .arb-hint-muted {
+    @apply mt-1 text-xs text-gray-500;
+  }
+
+  .arb-text-tertiary {
+    @apply mt-1 text-xs text-gray-400;
+  }
+
+  .arb-text-muted-body {
+    @apply text-sm text-gray-500;
+  }
+
+  .arb-not-found-title {
+    @apply mt-2 text-3xl font-bold tracking-tight text-arb-text-strong sm:text-4xl;
+  }
+
+  .arb-not-found-lede {
+    @apply mt-4 max-w-md text-sm leading-relaxed text-gray-600;
+  }
+
+  /* Logic toolbar (AND/OR + kicker) */
+  .arb-logic-toolbar {
+    @apply flex flex-wrap items-center gap-3 text-sm;
+  }
+
+  /* Rule payload table */
+  .arb-rule-table-wrap {
+    @apply overflow-x-auto rounded-md border border-arb-border;
+  }
+
+  .arb-rule-table {
+    @apply min-w-full text-left text-sm;
+  }
+
+  .arb-rule-thead {
+    @apply border-b border-arb-border bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-600;
+  }
+
+  .arb-rule-th {
+    @apply px-3 py-2.5;
+  }
+
+  .arb-rule-tbody {
+    @apply divide-y divide-arb-border-subtle bg-arb-elevated text-arb-text;
+  }
+
+  .arb-rule-tr {
+    @apply transition-colors hover:bg-gray-50/80;
+  }
+
+  .arb-rule-td-emphasis {
+    @apply px-3 py-2.5 font-medium text-arb-text-strong;
+  }
+
+  .arb-rule-td-muted {
+    @apply px-3 py-2.5 text-gray-600;
+  }
+
+  .arb-rule-td {
+    @apply px-3 py-2.5 text-arb-text;
+  }
+
+  .arb-rule-nested-stack {
+    @apply space-y-3 border-t border-arb-border-subtle pt-3;
+  }
+
+  /* Saved rules list */
+  .arb-list-section {
+    @apply bg-gray-50/80 px-6 py-6;
+  }
+
+  .arb-rule-list-title {
+    @apply truncate text-sm font-medium text-arb-text;
+  }
+
+  .arb-rule-list-meta {
+    @apply mt-0.5 text-xs text-gray-500;
+  }
+
+  .arb-details-chevron {
+    @apply text-gray-400 transition-transform group-open:rotate-90;
+  }
+
+  /* Matching contacts */
+  .arb-contact-line-primary {
+    @apply truncate text-sm font-medium leading-tight text-arb-text;
+  }
+
+  .arb-contact-line-secondary {
+    @apply truncate text-xs leading-tight text-gray-500;
+  }
+
+  /* Loading state messages */
+  .arb-loading-message {
+    @apply text-sm font-medium text-gray-600;
+  }
+
+  .arb-loading-message-compact {
+    @apply text-xs font-medium text-gray-600;
+  }
+
+  .arb-loading-hint {
+    @apply text-xs text-gray-500;
+  }
+
+  /* Icon affordances */
+  .arb-btn-icon-plus {
+    @apply text-base leading-none;
+  }
 }

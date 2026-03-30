@@ -1,12 +1,5 @@
-<div
-  class="space-y-3"
-  [class.rounded-lg]="nested()"
-  [class.border]="nested()"
-  [class.border-purple-200]="nested()"
-  [class.bg-white]="nested()"
-  [class.p-4]="nested()"
->
-  <div class="flex flex-wrap items-center gap-3 text-sm">
+<div class="space-y-3" [class.arb-nested-group]="nested()">
+  <div class="arb-logic-toolbar">
     <div
       class="arb-logic-shell"
       role="group"
@@ -31,29 +24,27 @@
         OR
       </span>
     </div>
-    <span class="text-xs font-medium uppercase tracking-wide text-gray-500">
+    <span class="arb-kicker">
       {{ helper[group().logic] }}
     </span>
   </div>
 
   @if (group().conditions.length > 0) {
-    <div class="overflow-x-auto rounded-md border border-gray-200">
-      <table class="min-w-full text-left text-sm">
-        <thead
-          class="border-b border-gray-200 bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-600"
-        >
+    <div class="arb-rule-table-wrap">
+      <table class="arb-rule-table">
+        <thead class="arb-rule-thead">
           <tr>
-            <th class="px-3 py-2.5">Field</th>
-            <th class="px-3 py-2.5">Operator</th>
-            <th class="px-3 py-2.5">Value</th>
+            <th class="arb-rule-th">Field</th>
+            <th class="arb-rule-th">Operator</th>
+            <th class="arb-rule-th">Value</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-100 bg-white text-gray-800">
+        <tbody class="arb-rule-tbody">
           @for (c of group().conditions; track $index) {
-            <tr class="transition-colors hover:bg-gray-50/80">
-              <td class="px-3 py-2.5 font-medium text-gray-900">{{ c.field }}</td>
-              <td class="px-3 py-2.5 text-gray-600">{{ c.operator }}</td>
-              <td class="px-3 py-2.5 text-gray-800">{{ c.value }}</td>
+            <tr class="arb-rule-tr">
+              <td class="arb-rule-td-emphasis">{{ c.field }}</td>
+              <td class="arb-rule-td-muted">{{ c.operator }}</td>
+              <td class="arb-rule-td">{{ c.value }}</td>
             </tr>
           }
         </tbody>
@@ -62,7 +53,7 @@
   }
 
   @if (group().groups.length > 0) {
-    <div class="space-y-3 border-t border-gray-100 pt-3">
+    <div class="arb-rule-nested-stack">
       @for (sub of group().groups; track $index) {
         <app-rule-payload-view [group]="sub" [nested]="true" />
       }
