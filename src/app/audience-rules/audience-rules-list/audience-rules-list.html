@@ -6,7 +6,11 @@
       <h2 class="text-lg font-semibold tracking-tight text-gray-800">Saved rules</h2>
       @if (error()) {
         <p class="mt-1 text-xs font-medium text-red-600">{{ error() }}</p>
-      } @else if (!loading() && displayRules().length === 0) {
+      }
+      @if (deleteError()) {
+        <p class="mt-1 text-xs font-medium text-red-600">{{ deleteError() }}</p>
+      }
+      @if (!error() && !loading() && displayRules().length === 0) {
         <p class="mt-1 text-xs text-gray-500">No saved rules yet. Save one from the builder above.</p>
       }
     </div>
@@ -40,22 +44,29 @@
                   Saved {{ rule.savedAt | date: 'medium' }} · Stored {{ rule.storedAt | date: 'medium' }}
                 </p>
               </div>
-              <span class="shrink-0 font-mono text-[10px] text-gray-400" [title]="rule.id">{{
-                rule.id.slice(0, 8)
-              }}</span>
+              <button
+                type="button"
+                class="shrink-0 rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-400 disabled:cursor-not-allowed disabled:opacity-50"
+                [disabled]="isDeleting(rule)"
+                (click)="deleteRule(rule, $event)"
+              >
+                {{ isDeleting(rule) ? 'Deleting…' : 'Delete' }}
+              </button>
             </div>
             <details class="group">
               <summary
                 class="cursor-pointer list-none px-4 py-2 text-xs font-medium text-blue-600 hover:bg-gray-50 hover:text-blue-700 [&::-webkit-details-marker]:hidden"
               >
                 <span class="inline-flex items-center gap-1">
-                  <span class="text-gray-400 group-open:rotate-90 transition-transform">▸</span>
-                  View rule JSON
+                  <span class="text-gray-400 transition-transform group-open:rotate-90">▸</span>
+                  View rule
                 </span>
               </summary>
-              <pre
-                class="max-h-64 overflow-auto border-t border-gray-100 bg-gray-50 p-4 text-xs leading-relaxed text-gray-700"
-              >{{ rule | json }}</pre>
+              <div
+                class="max-h-96 overflow-y-auto border-t border-gray-100 bg-gray-50/90 p-4"
+              >
+                <app-rule-payload-view [group]="rule.root" />
+              </div>
             </details>
           </li>
         }

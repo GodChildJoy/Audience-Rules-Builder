@@ -33,4 +33,8 @@ export class AudienceRulesApiService {
   saveRule(body: CreateAudienceRuleRequest): Observable<SavedAudienceRule> {
     return this.http.post<SavedAudienceRule>(`${this.baseUrl}/rules`, body);
   }
+
+  deleteRule(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/rules/${encodeURIComponent(id)}`);
+  }
 }

@@ -1,0 +1,71 @@
+<div
+  class="space-y-3"
+  [class.rounded-lg]="nested()"
+  [class.border]="nested()"
+  [class.border-purple-200]="nested()"
+  [class.bg-white]="nested()"
+  [class.p-4]="nested()"
+>
+  <div class="flex flex-wrap items-center gap-3 text-sm">
+    <div
+      class="inline-flex rounded-md border border-gray-200 bg-gray-50 p-0.5"
+      role="group"
+      [attr.aria-label]="'Combine conditions with ' + group().logic"
+    >
+      <span
+        class="rounded px-3 py-1.5 font-medium"
+        [class.text-blue-600]="group().logic === 'AND'"
+        [class.bg-white]="group().logic === 'AND'"
+        [class.shadow-sm]="group().logic === 'AND'"
+        [class.text-gray-500]="group().logic !== 'AND'"
+      >
+        AND
+      </span>
+      <span
+        class="rounded px-3 py-1.5 font-medium"
+        [class.text-blue-600]="group().logic === 'OR'"
+        [class.bg-white]="group().logic === 'OR'"
+        [class.shadow-sm]="group().logic === 'OR'"
+        [class.text-gray-500]="group().logic !== 'OR'"
+      >
+        OR
+      </span>
+    </div>
+    <span class="text-xs font-medium uppercase tracking-wide text-gray-500">
+      {{ helper[group().logic] }}
+    </span>
+  </div>
+
+  @if (group().conditions.length > 0) {
+    <div class="overflow-x-auto rounded-md border border-gray-200">
+      <table class="min-w-full text-left text-sm">
+        <thead
+          class="border-b border-gray-200 bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-600"
+        >
+          <tr>
+            <th class="px-3 py-2.5">Field</th>
+            <th class="px-3 py-2.5">Operator</th>
+            <th class="px-3 py-2.5">Value</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 bg-white text-gray-800">
+          @for (c of group().conditions; track $index) {
+            <tr class="transition-colors hover:bg-gray-50/80">
+              <td class="px-3 py-2.5 font-medium text-gray-900">{{ c.field }}</td>
+              <td class="px-3 py-2.5 text-gray-600">{{ c.operator }}</td>
+              <td class="px-3 py-2.5 text-gray-800">{{ c.value }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  @if (group().groups.length > 0) {
+    <div class="space-y-3 border-t border-gray-100 pt-3">
+      @for (sub of group().groups; track $index) {
+        <app-rule-payload-view [group]="sub" [nested]="true" />
+      }
+    </div>
+  }
+</div>
