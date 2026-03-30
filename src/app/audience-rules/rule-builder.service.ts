@@ -22,9 +22,6 @@ export interface ConditionErrors {
   providedIn: 'root',
 })
 export class RuleBuilderService {
-  /** Increments on each successful save; used for console payload `Audience segment ${n}`. */
-  private nextSaveAudienceRuleIndex = 1;
-
   private readonly audienceRulesApi = inject(AudienceRulesApiService);
 
   readonly root = signal<RuleGroup>(this.createInitialRoot());
@@ -130,8 +127,7 @@ export class RuleBuilderService {
     if (!this.isValid()) {
       return;
     }
-    const name = `Audience Rule ${this.nextSaveAudienceRuleIndex}`;
-    this.nextSaveAudienceRuleIndex += 1;
+    const name = `Audience Rule ${crypto.randomUUID()}`;
     const payload = {
       name,
       root: toMinimalRuleGroup(this.root()),
