@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import {
   FIELD_OPTIONS,
   getFieldDef,
@@ -12,6 +12,7 @@ import { RuleBuilderService, type ConditionErrors } from '../rule-builder.servic
 
 @Component({
   selector: 'app-rule-condition-row',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
   templateUrl: './rule-condition-row.html',
 })
@@ -22,9 +23,31 @@ export class RuleConditionRow {
   protected readonly showValidation = this.ruleBuilder.showValidation;
 
   protected readonly fields = FIELD_OPTIONS;
-  protected getOperators(): readonly OperatorDef[] {
-    return getOperatorsForField(this.condition().field);
-  }
+
+  /** Depends on `root` so uniqueness validation updates when siblings change. */
+  protected readonly operatorsForField = computed((): readonly OperatorDef[] =>
+    getOperatorsForField(this.condition().field),
+  );
+
+  protected readonly conditionErrors = computed((): ConditionErrors => {
+    this.ruleBuilder.root();
+    return this.ruleBuilder.getConditionErrors(this.condition());
+  });
+
+  protected readonly disabledFieldIds = computed((): ReadonlySet<FieldId> => {
+    this.ruleBuilder.root();
+    const cid = this.condition().id;
+    return new Set(
+      FIELD_OPTIONS.filter((f) => this.ruleBuilder.isFieldUsedByOther(f.id, cid)).map(
+        (f) => f.id,
+      ),
+    );
+  });
+
+  protected readonly firstValidationError = computed((): string | undefined => {
+    const e = this.conditionErrors();
+    return e.field ?? e.operator ?? e.value;
+  });
 
   protected patch(partial: Partial<Pick<RuleCondition, 'field' | 'operator' | 'value'>>): void {
     this.ruleBuilder.patchCondition(this.groupId(), this.condition().id, partial);
@@ -33,7 +56,9 @@ export class RuleConditionRow {
   protected onFieldChange(raw: string): void {
     const fieldId = getFieldDef(raw).id;
     const operators = getOperatorsForField(fieldId);
-    const operator = operators.some((o) => o.id === this.condition().operator) ? this.condition().operator : operators[0]?.id;
+    const operator = operators.some((o) => o.id === this.condition().operator)
+      ? this.condition().operator
+      : operators[0]?.id;
     this.patch({ field: fieldId, operator });
   }
 
@@ -42,20 +67,11 @@ export class RuleConditionRow {
   }
 
   protected isFieldDisabled(fieldId: FieldId): boolean {
-    return this.ruleBuilder.isFieldUsedByOther(fieldId, this.condition().id);
+    return this.disabledFieldIds().has(fieldId);
   }
 
   protected isDateField(): boolean {
     return this.condition().field === 'signupDate';
-  }
-
-  protected errors(): ConditionErrors {
-    return this.ruleBuilder.getConditionErrors(this.condition());
-  }
-
-  protected firstError(): string | undefined {
-    const errors = this.errors();
-    return errors.field ?? errors.operator ?? errors.value;
   }
 
   protected remove(): void {

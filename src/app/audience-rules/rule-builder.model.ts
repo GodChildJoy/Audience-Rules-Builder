@@ -5,6 +5,12 @@
 export const LOGIC_OPERATORS = ['AND', 'OR'] as const;
 export type LogicOperator = (typeof LOGIC_OPERATORS)[number];
 
+/** UI copy for AND/OR in builder + read-only payload preview */
+export const LOGIC_COMBINE_HELPER: Record<LogicOperator, string> = {
+  AND: 'ALL CONDITIONS MUST MATCH',
+  OR: 'ANY CONDITION MUST MATCH',
+};
+
 // ---------------------------------------------------------------------------
 // Field catalog — single source of truth; drives labels, operators, and ids
 // ---------------------------------------------------------------------------

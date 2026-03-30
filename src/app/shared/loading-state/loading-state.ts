@@ -1,9 +1,10 @@
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 export type LoadingStateVariant = 'list' | 'chips' | 'inline';
 
 @Component({
   selector: 'app-loading-state',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
   templateUrl: './loading-state.html',
   host: {

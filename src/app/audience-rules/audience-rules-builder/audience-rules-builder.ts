@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AudienceRulesHeader } from '../audience-rules-header/audience-rules-header';
 import { AudienceRulesList } from '../audience-rules-list/audience-rules-list';
 import { MatchingContacts } from '../matching-contacts/matching-contacts';
@@ -7,6 +7,7 @@ import { RuleBuilderService } from '../rule-builder.service';
 
 @Component({
   selector: 'app-audience-rules-builder',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [AudienceRulesHeader, AudienceRulesList, MatchingContacts, RuleGroupComponent],
   templateUrl: './audience-rules-builder.html',
 })

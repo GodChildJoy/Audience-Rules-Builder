@@ -1,5 +1,7 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { switchMap, tap } from 'rxjs';
 import { AudienceRulesApiService, type SavedAudienceRule } from '../audience-rules-api.service';
 import { LoadingStateComponent } from '../../shared/loading-state/loading-state';
 import { RulePayloadView } from '../rule-payload-view/rule-payload-view';
@@ -13,6 +15,7 @@ function countConditionsInGroup(group: RuleTreePayload.Group): number {
 
 @Component({
   selector: 'app-audience-rules-list',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DatePipe, LoadingStateComponent, RulePayloadView],
   templateUrl: './audience-rules-list.html',
 })
@@ -30,10 +33,28 @@ export class AudienceRulesList {
   );
 
   constructor() {
-    effect(() => {
-      this.api.savedRulesListVersion();
-      this.fetchRules();
-    });
+    toObservable(this.api.savedRulesListVersion)
+      .pipe(
+        tap(() => {
+          this.loading.set(true);
+          this.error.set(null);
+          this.deleteError.set(null);
+        }),
+        switchMap(() => this.api.listRules()),
+        takeUntilDestroyed(),
+      )
+      .subscribe({
+        next: (list) => {
+          this.rules.set(list);
+          this.loading.set(false);
+        },
+        error: () => {
+          this.error.set(
+            'Could not load saved rules. Is the API running on port 3000?',
+          );
+          this.loading.set(false);
+        },
+      });
   }
 
   protected conditionCount(rule: SavedAudienceRule): number {
@@ -60,22 +81,6 @@ export class AudienceRulesList {
       error: () => {
         this.deletingId.set(null);
         this.deleteError.set('Could not delete rule. Check the API and try again.');
-      },
-    });
-  }
-
-  private fetchRules(): void {
-    this.loading.set(true);
-    this.error.set(null);
-    this.deleteError.set(null);
-    this.api.listRules().subscribe({
-      next: (list) => {
-        this.rules.set(list);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.error.set('Could not load saved rules. Is the API running on port 3000?');
-        this.loading.set(false);
       },
     });
   }

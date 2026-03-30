@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { LoadingStateComponent } from '../../shared/loading-state/loading-state';
 import { AudienceRulesApiService } from '../audience-rules-api.service';
 import { RuleBuilderService } from '../rule-builder.service';
@@ -6,6 +6,7 @@ import { toMinimalRuleGroup } from '../rule-builder.model';
 
 @Component({
   selector: 'app-matching-contacts',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LoadingStateComponent],
   templateUrl: './matching-contacts.html',
 })

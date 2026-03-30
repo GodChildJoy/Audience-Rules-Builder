@@ -1,0 +1,82 @@
+---
+description: Angular + TypeScript conventions — structure, performance, testing, and maintainability (modern Angular, not React).
+alwaysApply: false
+---
+# Angular (TypeScript) — Best Practices
+
+Expert Angular + TypeScript guidance: clear, readable, maintainable code; nuanced, accurate answers; admit uncertainty instead of guessing.
+
+## Key principles
+
+- **Clarity and readability** over cleverness.
+- **Performance** without sacrificing readability.
+- **Maintainability** — easy to extend and refactor.
+
+## Angular patterns (not React)
+
+- **Components**: Prefer **standalone** components with explicit `imports`; use **class-based** components with decorators (`@Component`, `@Directive`) — Angular does not use “functional components” or React hooks.
+- **State and side effects**: Prefer **signals** (`signal`, `computed`, `effect`) where they fit; use **RxJS** with `takeUntilDestroyed()` or `DestroyRef` for async work; use lifecycle hooks (`ngOnInit`, etc.) when appropriate — not `useEffect`.
+- **Change detection**: Prefer **`ChangeDetectionStrategy.OnPush`** when inputs are stable; use **`trackBy`** on `*ngFor` for lists; avoid unnecessary subscriptions and impure pipes.
+- **Variable declarations**: Prefer `const` over `let` when the binding does not change.
+- **Naming**: `camelCase` for variables and functions; **PascalCase** for classes, components, directives, and pipes; match Angular style guide for selectors and file names.
+
+## Libraries
+
+- **Angular** for the application shell, routing, and DI.
+- **TypeScript** for typing and tooling.
+- **Unit tests**: Use the project’s configured runner (this repo uses **Vitest** via `ng test`; other projects may use **Jest** — follow `package.json` and `angular.json`).
+
+## File structure
+
+- **`src/app`**: Feature areas and shells (this project colocates components under feature folders such as `audience-rules/`, `shared/`).
+- Reusable UI often lives under **`src/app/shared/`** or a feature module; adjust to the repo’s existing layout — do not invent `src/components` at the root unless the project already uses it.
+- **`src/services`**: Prefer **`src/app/...` services** with `@Injectable` — align with existing folders.
+- Tests: colocate **`*.spec.ts`** next to the file under test unless the project uses a different convention.
+
+## Performance
+
+- **Lazy loading**: Use `loadComponent` / `loadChildren` in routes for feature chunks.
+- **Lists**: `trackBy` for large `*ngFor` lists; avoid re-creating array references without need.
+- **Templates**: Keep templates cheap; move heavy logic to components, pipes, or services.
+
+## Testing
+
+- **Unit tests** with `TestBed` (and **@angular/testing** utilities); use **component harnesses** when they add clarity.
+- **Coverage**: Aim for high coverage on critical paths (e.g. **≥80%** where the team agrees it is worth the cost).
+- **Snapshots**: Use sparingly for stable, low-churn UI; prefer explicit assertions for behavior.
+
+## Documentation
+
+- **JSDoc**: Document public APIs and non-obvious behavior; do not restate the obvious.
+- **READMEs**: Add or update **only when** the user or project asks for directory-level docs — avoid requiring a README in every folder unless that is an explicit product rule.
+- **Bilingual docs**: Only if the project already mandates English + Chinese (or another pair); otherwise one clear language is enough.
+
+## Error handling
+
+- Use **`try`/`catch`** (or `catchError` in RxJS pipes) for async flows where failures are expected and recoverable.
+- App-wide failures: implement or use **`ErrorHandler`** and/or route-level error handling — there is no React “error boundary,” but the idea (centralized handling) still applies.
+
+## Additional guidelines
+
+- **Function length**: Keep functions focused; roughly **≤50** executable lines before splitting.
+- **Line length**: Prefer **≤80** characters where practical (wrap for readability).
+- **Parameters**: Prefer **≤4** parameters; use an options object or a small DTO for larger argument lists.
+- **Refactoring**: Preserve existing **JSDoc** unless comments are wrong or misleading.
+- **Honesty**: Say when something is unknown or context-dependent.
+
+## Example (standalone-friendly)
+
+```typescript
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+
+@Component({
+  selector: 'app-example',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `<p>{{ label() }}</p>`,
+})
+export class ExampleComponent {
+  readonly label = input.required<string>();
+}
+```
+
+Simple, readable, and aligned with modern Angular patterns.

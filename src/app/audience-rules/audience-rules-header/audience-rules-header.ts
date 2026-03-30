@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RuleBuilderService } from '../rule-builder.service';
 
 @Component({
   selector: 'app-audience-rules-header',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
   templateUrl: './audience-rules-header.html',
 })
