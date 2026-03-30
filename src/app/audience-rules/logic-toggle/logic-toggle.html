@@ -1,8 +1,8 @@
 <div class="flex flex-wrap items-center gap-3 text-sm">
-  <div class="inline-flex rounded-md border border-gray-200 bg-gray-50 p-0.5" role="group" aria-label="Combine conditions with">
+  <div class="arb-logic-shell" role="group" aria-label="Combine conditions with">
     <button
       type="button"
-      class="rounded px-3 py-1.5 font-medium transition-colors"
+      class="arb-logic-btn"
       [class.text-blue-600]="logic() === 'AND'"
       [class.bg-white]="logic() === 'AND'"
       [class.shadow-sm]="logic() === 'AND'"
@@ -13,7 +13,7 @@
     </button>
     <button
       type="button"
-      class="rounded px-3 py-1.5 font-medium transition-colors"
+      class="arb-logic-btn"
       [class.text-blue-600]="logic() === 'OR'"
       [class.bg-white]="logic() === 'OR'"
       [class.shadow-sm]="logic() === 'OR'"

@@ -8,12 +8,12 @@
 >
   <div class="flex flex-wrap items-center gap-3 text-sm">
     <div
-      class="inline-flex rounded-md border border-gray-200 bg-gray-50 p-0.5"
+      class="arb-logic-shell"
       role="group"
       [attr.aria-label]="'Combine conditions with ' + group().logic"
     >
       <span
-        class="rounded px-3 py-1.5 font-medium"
+        class="arb-logic-btn"
         [class.text-blue-600]="group().logic === 'AND'"
         [class.bg-white]="group().logic === 'AND'"
         [class.shadow-sm]="group().logic === 'AND'"
@@ -22,7 +22,7 @@
         AND
       </span>
       <span
-        class="rounded px-3 py-1.5 font-medium"
+        class="arb-logic-btn"
         [class.text-blue-600]="group().logic === 'OR'"
         [class.bg-white]="group().logic === 'OR'"
         [class.shadow-sm]="group().logic === 'OR'"

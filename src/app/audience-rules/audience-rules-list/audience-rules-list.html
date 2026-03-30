@@ -1,7 +1,7 @@
-<div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-  <header class="border-b border-gray-200 bg-white px-6 py-4">
+<div class="arb-card">
+  <header class="arb-list-panel-header">
     <div>
-      <h2 class="text-lg font-semibold tracking-tight text-gray-800">Saved rules</h2>
+      <h2 class="arb-list-heading">Saved rules</h2>
       @if (error()) {
         <p class="mt-1 text-xs font-medium text-red-600">{{ error() }}</p>
       }
@@ -20,10 +20,8 @@
     } @else if (!error() && displayRules().length > 0) {
       <ul class="space-y-3">
         @for (rule of displayRules(); track rule.id) {
-          <li
-            class="overflow-hidden rounded-md border border-gray-200 bg-white shadow-sm"
-          >
-            <div class="flex flex-wrap items-start justify-between gap-3 border-b border-gray-100 px-4 py-3">
+          <li class="arb-rule-row">
+            <div class="arb-rule-row-header">
               <div class="min-w-0 flex-1">
                 <p class="truncate text-sm font-medium text-gray-800">{{ rule.name }}</p>
                 <p class="mt-0.5 text-xs text-gray-500">
@@ -36,15 +34,12 @@
               </div>
               <button
                 type="button"
-                class="inline-flex shrink-0 items-center justify-center gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-400 disabled:cursor-not-allowed disabled:opacity-50"
+                class="arb-btn-delete"
                 [disabled]="isDeleting(rule)"
                 (click)="deleteRule(rule, $event)"
               >
                 @if (isDeleting(rule)) {
-                  <span
-                    class="inline-block size-3.5 shrink-0 animate-spin rounded-full border-2 border-red-200 border-t-red-600"
-                    aria-hidden="true"
-                  ></span>
+                  <span class="arb-spinner-red-sm" aria-hidden="true"></span>
                   <span>Deleting…</span>
                 } @else {
                   <span>Delete</span>
@@ -52,17 +47,13 @@
               </button>
             </div>
             <details class="group">
-              <summary
-                class="cursor-pointer list-none px-4 py-2 text-xs font-medium text-blue-600 hover:bg-gray-50 hover:text-blue-700 [&::-webkit-details-marker]:hidden"
-              >
+              <summary class="arb-details-summary">
                 <span class="inline-flex items-center gap-1">
                   <span class="text-gray-400 transition-transform group-open:rotate-90">▸</span>
                   View rule
                 </span>
               </summary>
-              <div
-                class="max-h-96 overflow-y-auto border-t border-gray-100 bg-gray-50/90 p-4"
-              >
+              <div class="arb-details-body">
                 <app-rule-payload-view [group]="rule.root" />
               </div>
             </details>

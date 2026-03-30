@@ -1,36 +1,28 @@
-<div class="min-h-screen bg-gray-100">
-<div class="mx-auto max-w-4xl space-y-6 p-6">
-  <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-    <app-audience-rules-header />
+<div class="arb-page">
+  <div class="arb-page-inner">
+    <div class="arb-card">
+      <app-audience-rules-header />
 
-    <div class="space-y-6 bg-gray-50/80 px-6 py-6">
-      <app-rule-group [groupId]="root().id" />
+      <div class="arb-section-muted">
+        <app-rule-group [groupId]="root().id" />
+      </div>
+
+      <div class="arb-card-footer-actions">
+        <button type="button" class="arb-btn-dashed" (click)="addRootCondition()">
+          <span class="text-base leading-none">+</span>
+          Add condition
+        </button>
+        <button type="button" class="arb-btn-dashed" (click)="addRootGroup()">
+          <span class="text-base leading-none">+</span>
+          Add group
+        </button>
+      </div>
+
+      <div class="arb-section-muted-continued">
+        <app-matching-contacts />
+      </div>
     </div>
 
-    <div class="flex flex-wrap gap-3 border-t border-gray-200 bg-white px-6 py-4">
-      <button
-        type="button"
-        class="inline-flex items-center gap-2 rounded-md border border-dashed border-gray-300 bg-gray-50 px-4 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:border-gray-400 hover:bg-gray-100"
-        (click)="addRootCondition()"
-      >
-        <span class="text-base leading-none">+</span>
-        Add condition
-      </button>
-      <button
-        type="button"
-        class="inline-flex items-center gap-2 rounded-md border border-dashed border-gray-300 bg-gray-50 px-4 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:border-gray-400 hover:bg-gray-100"
-        (click)="addRootGroup()"
-      >
-        <span class="text-base leading-none">+</span>
-        Add group
-      </button>
-    </div>
-
-    <div class="border-t border-gray-200 bg-gray-50/80 px-6 py-6">
-      <app-matching-contacts />
-    </div>
+    <app-audience-rules-list />
   </div>
-
-  <app-audience-rules-list />
-</div>
 </div>

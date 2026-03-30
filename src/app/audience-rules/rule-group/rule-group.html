@@ -1,4 +1,4 @@
-<div class="space-y-4" [class]="nested() ? 'rounded-lg border border-purple-200 bg-white p-4' : ''">
+<div class="space-y-4" [class.arb-nested-group]="nested()">
   <app-logic-toggle [groupId]="group().id" [logic]="group().logic" />
 
   <div class="space-y-3">
@@ -15,19 +15,11 @@
 
   @if (nested()) {
     <div class="flex flex-wrap gap-3">
-      <button
-        type="button"
-        class="inline-flex items-center gap-2 rounded-md border border-dashed border-gray-300 bg-gray-50 px-4 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:border-gray-400 hover:bg-gray-100"
-        (click)="addNestedCondition()"
-      >
+      <button type="button" class="arb-btn-dashed" (click)="addNestedCondition()">
         <span class="text-base leading-none">+</span>
         Add condition
       </button>
-      <button
-        type="button"
-        class="inline-flex items-center gap-2 rounded-md border border-dashed border-gray-300 bg-gray-50 px-4 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:border-gray-400 hover:bg-gray-100"
-        (click)="addNestedGroup()"
-      >
+      <button type="button" class="arb-btn-dashed" (click)="addNestedGroup()">
         <span class="text-base leading-none">+</span>
         Add group
       </button>

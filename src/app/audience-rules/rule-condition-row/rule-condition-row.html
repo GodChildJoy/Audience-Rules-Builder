@@ -3,7 +3,7 @@
   <div class="min-w-[140px] flex-1">
     <label class="sr-only" [for]="'field-' + condition().id">Field</label>
     <select
-      class="w-full rounded-md border bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:outline-none focus:ring-1"
+      class="arb-field-control"
       [class.border-gray-300]="!showValidation() || !errors().field"
       [class.focus:border-blue-500]="!showValidation() || !errors().field"
       [class.focus:ring-blue-500]="!showValidation() || !errors().field"
@@ -23,7 +23,7 @@
   <div class="min-w-[140px] flex-1">
     <label class="sr-only" [for]="'op-' + condition().id">Operator</label>
     <select
-      class="w-full rounded-md border bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:outline-none focus:ring-1"
+      class="arb-field-control"
       [class.border-gray-300]="!showValidation() || !errors().operator"
       [class.focus:border-blue-500]="!showValidation() || !errors().operator"
       [class.focus:ring-blue-500]="!showValidation() || !errors().operator"
@@ -44,7 +44,7 @@
     <label class="sr-only" [for]="'val-' + condition().id">Value</label>
     @if (isDateField()) {
       <input
-        class="w-full rounded-md border bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:outline-none focus:ring-1"
+        class="arb-field-control"
         [class.border-gray-300]="!showValidation() || !errors().value"
         [class.focus:border-blue-500]="!showValidation() || !errors().value"
         [class.focus:ring-blue-500]="!showValidation() || !errors().value"
@@ -59,7 +59,7 @@
       />
     } @else {
       <input
-        class="w-full rounded-md border bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:outline-none focus:ring-1"
+        class="arb-field-control"
         [class.border-gray-300]="!showValidation() || !errors().value"
         [class.focus:border-blue-500]="!showValidation() || !errors().value"
         [class.focus:ring-blue-500]="!showValidation() || !errors().value"
@@ -77,7 +77,7 @@
   </div>
   <button
     type="button"
-    class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-red-200 bg-red-50 text-red-600 transition-colors hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-400"
+    class="arb-btn-remove"
     (click)="remove()"
     aria-label="Remove condition"
   >

@@ -1,23 +1,18 @@
-<header
-  class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 bg-white px-6 py-4"
->
+<header class="arb-panel-header">
   <div>
-    <h1 class="text-lg font-semibold tracking-tight text-gray-800">Audience Rules</h1>
+    <h1 class="arb-title-page">Audience Rules</h1>
     @if (hasValidationErrors()) {
       <p class="mt-1 text-xs font-medium text-red-600">Fix validation errors before saving.</p>
     }
   </div>
   <button
     type="button"
-    class="inline-flex min-w-[7.5rem] items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-80"
+    class="arb-btn-primary"
     (click)="onSave()"
     [disabled]="saveInProgress()"
   >
     @if (saveInProgress()) {
-      <span
-        class="inline-block size-4 shrink-0 animate-spin rounded-full border-2 border-white/35 border-t-white"
-        aria-hidden="true"
-      ></span>
+      <span class="arb-spinner-white" aria-hidden="true"></span>
       <span>Saving…</span>
     } @else {
       <span>Save Rule</span>
