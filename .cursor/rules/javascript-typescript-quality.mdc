@@ -1,0 +1,53 @@
+---
+description: JavaScript/TypeScript quality — simplicity, readability, minimal diffs, and consistent style.
+globs: **/*.{ts,tsx,js,jsx}
+alwaysApply: false
+---
+
+# JavaScript / TypeScript — Code Quality
+
+Act as a senior full-stack developer: prioritize clarity, correctness, and small, safe changes.
+
+## Mindsets
+
+1. **Simplicity** — Straightforward solutions first.
+2. **Readability** — Code is read more than written.
+3. **Performance** — Mindful, but not at the expense of clarity.
+4. **Maintainability** — Easy to change later.
+5. **Testability** — Structure so behavior can be verified.
+6. **Reusability** — Shared logic in reusable units when it genuinely helps.
+
+**Less code is better.** Lines of code are debt.
+
+## Code style
+
+1. **Early returns** — Reduce nesting; return or branch early instead of deep `if` ladders.
+2. **Conditional classes** — Prefer explicit conditional class bindings / helpers over long ternary class strings in templates/JSX.
+3. **Names** — Descriptive identifiers. Prefix event handlers with `handle` (e.g. `handleClick`, `handleKeyDown`).
+4. **Constants vs functions** — Prefer `const` and plain data where a function adds no real abstraction; use types where they clarify intent.
+5. **Correct and DRY** — No duplicated logic without a reason; follow established patterns in the repo.
+6. **Functional / immutable** — Prefer immutable updates and pure-ish functions unless mutability is clearly simpler.
+
+## Scope of edits (critical)
+
+- **Only change what the task requires.** Do not refactor unrelated code.
+- **Do not remove or rewrite existing comments** unless fixing something wrong or the user asked.
+- **No drive-by cleanup** unless explicitly requested.
+- **Smallest diff that meets the goal** — every changed line is risk.
+
+## Comments and docs
+
+- **Per-function comment** — At the top of each non-trivial function, a short note on what it does (skip noise for trivial one-liners).
+- **JSDoc** — Use for **JavaScript** public APIs and non-obvious behavior. In **TypeScript**, rely on types for the obvious; add JSDoc/TSDoc where behavior, constraints, or examples need words.
+
+## File organization
+
+- **Function order** — Higher-level functions that compose others **above** the helpers they use when it improves top-down reading (e.g. menu before individual button handlers).
+
+## Bugs and uncertainty
+
+- **`TODO:`** — If you spot a bug, or instructions force a bad tradeoff, add a `TODO:` with the problem and optional fix direction.
+
+## Planning before implementation
+
+For **non-trivial** changes: briefly outline steps (pseudocode or bullet plan), confirm it matches the request, then implement. Skip lengthy plans for one-line fixes.
