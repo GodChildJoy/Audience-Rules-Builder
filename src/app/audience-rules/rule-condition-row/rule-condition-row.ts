@@ -1,5 +1,13 @@
 import { Component, inject, input } from '@angular/core';
-import { FIELD_OPTIONS, getOperatorsForField, type Condition, type OperatorDef } from '../rule-builder.model';
+import {
+  FIELD_OPTIONS,
+  getFieldDef,
+  getOperatorsForField,
+  type FieldId,
+  type OperatorDef,
+  type RuleCondition,
+  type RuleOperatorId,
+} from '../rule-builder.model';
 import { RuleBuilderService, type ConditionErrors } from '../rule-builder.service';
 
 @Component({
@@ -9,26 +17,31 @@ import { RuleBuilderService, type ConditionErrors } from '../rule-builder.servic
 })
 export class RuleConditionRow {
   readonly groupId = input.required<string>();
-  readonly condition = input.required<Condition>();
+  readonly condition = input.required<RuleCondition>();
   private readonly ruleBuilder = inject(RuleBuilderService);
   protected readonly showValidation = this.ruleBuilder.showValidation;
 
   protected readonly fields = FIELD_OPTIONS;
-  protected getOperators(): OperatorDef[] {
+  protected getOperators(): readonly OperatorDef[] {
     return getOperatorsForField(this.condition().field);
   }
 
-  protected patch(partial: Partial<Condition>): void {
+  protected patch(partial: Partial<Pick<RuleCondition, 'field' | 'operator' | 'value'>>): void {
     this.ruleBuilder.patchCondition(this.groupId(), this.condition().id, partial);
   }
 
-  protected onFieldChange(fieldId: string): void {
+  protected onFieldChange(raw: string): void {
+    const fieldId = getFieldDef(raw).id;
     const operators = getOperatorsForField(fieldId);
     const operator = operators.some((o) => o.id === this.condition().operator) ? this.condition().operator : operators[0]?.id;
     this.patch({ field: fieldId, operator });
   }
 
-  protected isFieldDisabled(fieldId: string): boolean {
+  protected onOperatorChange(raw: string): void {
+    this.patch({ operator: raw as RuleOperatorId });
+  }
+
+  protected isFieldDisabled(fieldId: FieldId): boolean {
     return this.ruleBuilder.isFieldUsedByOther(fieldId, this.condition().id);
   }
 

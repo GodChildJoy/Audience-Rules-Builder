@@ -32,7 +32,7 @@
       [class.focus:ring-red-500]="showValidation() && !!errors().operator"
       [id]="'op-' + condition().id"
       [value]="condition().operator"
-      (change)="patch({ operator: $any($event.target).value })"
+      (change)="onOperatorChange($any($event.target).value)"
       [attr.aria-invalid]="showValidation() && !!errors().operator"
     >
       @for (o of getOperators(); track o.id) {

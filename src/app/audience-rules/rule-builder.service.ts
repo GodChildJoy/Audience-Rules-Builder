@@ -1,5 +1,15 @@
 import { computed, Injectable, signal } from '@angular/core';
-import { FIELD_OPTIONS, createCondition, createRuleGroup, getOperatorsForField, type Condition, type LogicOperator, type RuleGroup } from './rule-builder.model';
+import {
+  FIELD_OPTIONS,
+  createCondition,
+  createRuleGroup,
+  getOperatorsForField,
+  toMinimalRuleGroup,
+  type FieldId,
+  type LogicOperator,
+  type RuleCondition,
+  type RuleGroup,
+} from './rule-builder.model';
 
 export interface ConditionErrors {
   field?: string;
@@ -12,7 +22,7 @@ export interface ConditionErrors {
 })
 export class RuleBuilderService {
   /** Increments on each successful save; used for console payload `Audience segment ${n}`. */
-  private nextSaveAudienceSegmentIndex = 1;
+  private nextSaveAudienceRuleIndex = 1;
 
   readonly root = signal<RuleGroup>(this.createInitialRoot());
   readonly showValidation = signal(false);
@@ -27,7 +37,11 @@ export class RuleBuilderService {
     this.updateGroup(groupId, (group) => ({ ...group, logic }));
   }
 
-  patchCondition(groupId: string, conditionId: string, partial: Partial<Condition>): void {
+  patchCondition(
+    groupId: string,
+    conditionId: string,
+    partial: Partial<Pick<RuleCondition, 'field' | 'operator' | 'value'>>,
+  ): void {
     this.updateGroup(groupId, (group) => ({
       ...group,
       conditions: group.conditions.map((condition) =>
@@ -70,7 +84,7 @@ export class RuleBuilderService {
     }));
   }
 
-  getConditionErrors(condition: Condition): ConditionErrors {
+  getConditionErrors(condition: RuleCondition): ConditionErrors {
     const errors: ConditionErrors = {};
     const usageCounts = this.getFieldUsageCounts(this.root());
     const fieldExists = FIELD_OPTIONS.some((field) => field.id === condition.field);
@@ -113,11 +127,11 @@ export class RuleBuilderService {
     if (!this.isValid()) {
       return;
     }
-    const name = `Audience segment ${this.nextSaveAudienceSegmentIndex}`;
-    this.nextSaveAudienceSegmentIndex += 1;
+    const name = `Audience Rule ${this.nextSaveAudienceRuleIndex}`;
+    this.nextSaveAudienceRuleIndex += 1;
     const payload = {
       name,
-      root: structuredClone(this.root()),
+      root: toMinimalRuleGroup(this.root()),
       savedAt: new Date().toISOString(),
     };
     console.log('Audience rule payload', payload);
@@ -231,7 +245,7 @@ export class RuleBuilderService {
     return group.groups.every((child) => this.validateGroup(child));
   }
 
-  private collectConditions(group: RuleGroup): Condition[] {
+  private collectConditions(group: RuleGroup): RuleCondition[] {
     return [
       ...group.conditions,
       ...group.groups.flatMap((child) => this.collectConditions(child)),
@@ -246,7 +260,7 @@ export class RuleBuilderService {
     return counts;
   }
 
-  private findFirstUnusedFieldId(): string | null {
+  private findFirstUnusedFieldId(): FieldId | null {
     const used = new Set(this.collectConditions(this.root()).map((condition) => condition.field));
     for (const field of FIELD_OPTIONS) {
       if (!used.has(field.id)) {

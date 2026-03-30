@@ -1,31 +1,15 @@
-export type LogicOperator = 'AND' | 'OR';
+// ---------------------------------------------------------------------------
+// Logic (how conditions / nested groups combine within one group)
+// ---------------------------------------------------------------------------
 
-export interface Condition {
-  id: string;
-  field: string;
-  operator: string;
-  value: string;
-}
+export const LOGIC_OPERATORS = ['AND', 'OR'] as const;
+export type LogicOperator = (typeof LOGIC_OPERATORS)[number];
 
-export interface RuleGroup {
-  id: string;
-  logic: LogicOperator;
-  conditions: Condition[];
-  groups: RuleGroup[];
-}
+// ---------------------------------------------------------------------------
+// Field catalog — single source of truth; drives labels, operators, and ids
+// ---------------------------------------------------------------------------
 
-export interface OperatorDef {
-  id: string;
-  label: string;
-}
-
-export interface FieldDef {
-  id: string;
-  label: string;
-  operators: OperatorDef[];
-}
-
-export const FIELD_OPTIONS: FieldDef[] = [
+const FIELD_CATALOG = [
   {
     id: 'country',
     label: 'country',
@@ -60,17 +44,92 @@ export const FIELD_OPTIONS: FieldDef[] = [
       { id: 'on', label: 'on' },
     ],
   },
-];
+] as const;
 
-export function getFieldDef(fieldId: string): FieldDef {
-  return FIELD_OPTIONS.find((f) => f.id === fieldId) ?? FIELD_OPTIONS[0];
+export type FieldId = (typeof FIELD_CATALOG)[number]['id'];
+export type RuleOperatorId = (typeof FIELD_CATALOG)[number]['operators'][number]['id'];
+
+export interface FieldOperatorOption {
+  readonly id: RuleOperatorId;
+  readonly label: string;
 }
 
-export function getOperatorsForField(fieldId: string): OperatorDef[] {
+export interface FieldSchema {
+  readonly id: FieldId;
+  readonly label: string;
+  readonly operators: readonly FieldOperatorOption[];
+}
+
+export const FIELD_OPTIONS: readonly FieldSchema[] = FIELD_CATALOG;
+
+export type OperatorDef = FieldOperatorOption;
+export type FieldDef = FieldSchema;
+
+export function getFieldDef(fieldId: string): FieldSchema {
+  const found = FIELD_CATALOG.find((f) => f.id === fieldId);
+  return (found ?? FIELD_CATALOG[0]) as FieldSchema;
+}
+
+export function getOperatorsForField(fieldId: string): readonly FieldOperatorOption[] {
   return getFieldDef(fieldId).operators;
 }
 
-export function createCondition(fieldId = 'country'): Condition {
+// ---------------------------------------------------------------------------
+// Editor tree (client state: stable ids for targeting rows / groups)
+// ---------------------------------------------------------------------------
+
+export interface RuleCondition {
+  readonly id: string;
+  field: FieldId;
+  operator: RuleOperatorId;
+  value: string;
+}
+
+export interface RuleGroup {
+  readonly id: string;
+  logic: LogicOperator;
+  conditions: RuleCondition[];
+  groups: RuleGroup[];
+}
+
+// ---------------------------------------------------------------------------
+// Serializable rule tree (API / storage — no client ids)
+// ---------------------------------------------------------------------------
+
+export namespace RuleTreePayload {
+  export interface Condition {
+    field: FieldId;
+    operator: RuleOperatorId;
+    value: string;
+  }
+
+  export interface Group {
+    logic: LogicOperator;
+    conditions: Condition[];
+    groups: Group[];
+  }
+}
+
+export type MinimalCondition = RuleTreePayload.Condition;
+export type MinimalRuleGroup = RuleTreePayload.Group;
+
+export function toMinimalRuleGroup(group: RuleGroup): RuleTreePayload.Group {
+  return {
+    logic: group.logic,
+    conditions: group.conditions.map((c) => ({
+      field: c.field,
+      operator: c.operator,
+      value: c.value,
+    })),
+    groups: group.groups.map(toMinimalRuleGroup),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Factories
+// ---------------------------------------------------------------------------
+
+export function createCondition(fieldId: FieldId = 'country'): RuleCondition {
   const selectedField = getFieldDef(fieldId).id;
   const defaultOperator = getOperatorsForField(selectedField)[0]?.id ?? 'is';
   return {
