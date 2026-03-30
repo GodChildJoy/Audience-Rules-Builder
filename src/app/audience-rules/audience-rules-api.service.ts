@@ -1,0 +1,36 @@
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable, InjectionToken } from '@angular/core';
+import { Observable } from 'rxjs';
+import type { RuleTreePayload } from './rule-builder.model';
+
+export const AUDIENCE_RULES_API_BASE_URL = new InjectionToken<string>('AUDIENCE_RULES_API_BASE_URL', {
+  providedIn: 'root',
+  factory: () => 'http://localhost:3000',
+});
+
+export interface CreateAudienceRuleRequest {
+  name: string;
+  root: RuleTreePayload.Group;
+  savedAt?: string;
+}
+
+export interface SavedAudienceRule extends CreateAudienceRuleRequest {
+  id: string;
+  storedAt: string;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AudienceRulesApiService {
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = inject(AUDIENCE_RULES_API_BASE_URL);
+
+  listRules(): Observable<SavedAudienceRule[]> {
+    return this.http.get<SavedAudienceRule[]>(`${this.baseUrl}/rules`);
+  }
+
+  saveRule(body: CreateAudienceRuleRequest): Observable<SavedAudienceRule> {
+    return this.http.post<SavedAudienceRule>(`${this.baseUrl}/rules`, body);
+  }
+}

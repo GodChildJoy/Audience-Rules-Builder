@@ -1,11 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { AudienceRulesHeader } from '../audience-rules-header/audience-rules-header';
+import { AudienceRulesList } from '../audience-rules-list/audience-rules-list';
 import { RuleGroupComponent } from '../rule-group/rule-group';
 import { RuleBuilderService } from '../rule-builder.service';
 
 @Component({
   selector: 'app-audience-rules-builder',
-  imports: [AudienceRulesHeader, RuleGroupComponent],
+  imports: [AudienceRulesHeader, AudienceRulesList, RuleGroupComponent],
   templateUrl: './audience-rules-builder.html',
 })
 export class AudienceRulesBuilder {

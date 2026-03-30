@@ -1,0 +1,65 @@
+<div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+  <header
+    class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 bg-white px-6 py-4"
+  >
+    <div>
+      <h2 class="text-lg font-semibold tracking-tight text-gray-800">Saved rules</h2>
+      @if (error()) {
+        <p class="mt-1 text-xs font-medium text-red-600">{{ error() }}</p>
+      } @else if (!loading() && displayRules().length === 0) {
+        <p class="mt-1 text-xs text-gray-500">No saved rules yet. Save one from the builder above.</p>
+      }
+    </div>
+    <button
+      type="button"
+      class="inline-flex items-center gap-2 rounded-md border border-dashed border-gray-300 bg-gray-50 px-4 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:border-gray-400 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
+      (click)="refresh()"
+      [disabled]="loading()"
+    >
+      Refresh
+    </button>
+  </header>
+
+  <div class="bg-gray-50/80 px-6 py-6">
+    @if (loading()) {
+      <p class="text-sm text-gray-500">Loading saved rules…</p>
+    } @else if (!error() && displayRules().length > 0) {
+      <ul class="space-y-3">
+        @for (rule of displayRules(); track rule.id) {
+          <li
+            class="overflow-hidden rounded-md border border-gray-200 bg-white shadow-sm"
+          >
+            <div class="flex flex-wrap items-start justify-between gap-3 border-b border-gray-100 px-4 py-3">
+              <div class="min-w-0 flex-1">
+                <p class="truncate text-sm font-medium text-gray-800">{{ rule.name }}</p>
+                <p class="mt-0.5 text-xs text-gray-500">
+                  {{ rule.root.logic }} · {{ conditionCount(rule) }}
+                  {{ conditionCount(rule) === 1 ? 'condition' : 'conditions' }}
+                </p>
+                <p class="mt-1 text-xs text-gray-400">
+                  Saved {{ rule.savedAt | date: 'medium' }} · Stored {{ rule.storedAt | date: 'medium' }}
+                </p>
+              </div>
+              <span class="shrink-0 font-mono text-[10px] text-gray-400" [title]="rule.id">{{
+                rule.id.slice(0, 8)
+              }}</span>
+            </div>
+            <details class="group">
+              <summary
+                class="cursor-pointer list-none px-4 py-2 text-xs font-medium text-blue-600 hover:bg-gray-50 hover:text-blue-700 [&::-webkit-details-marker]:hidden"
+              >
+                <span class="inline-flex items-center gap-1">
+                  <span class="text-gray-400 group-open:rotate-90 transition-transform">▸</span>
+                  View rule JSON
+                </span>
+              </summary>
+              <pre
+                class="max-h-64 overflow-auto border-t border-gray-100 bg-gray-50 p-4 text-xs leading-relaxed text-gray-700"
+              >{{ rule | json }}</pre>
+            </details>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</div>

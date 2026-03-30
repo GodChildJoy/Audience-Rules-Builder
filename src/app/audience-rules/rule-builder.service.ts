@@ -1,4 +1,5 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { AudienceRulesApiService } from './audience-rules-api.service';
 import {
   FIELD_OPTIONS,
   createCondition,
@@ -23,6 +24,8 @@ export interface ConditionErrors {
 export class RuleBuilderService {
   /** Increments on each successful save; used for console payload `Audience segment ${n}`. */
   private nextSaveAudienceRuleIndex = 1;
+
+  private readonly audienceRulesApi = inject(AudienceRulesApiService);
 
   readonly root = signal<RuleGroup>(this.createInitialRoot());
   readonly showValidation = signal(false);
@@ -134,7 +137,10 @@ export class RuleBuilderService {
       root: toMinimalRuleGroup(this.root()),
       savedAt: new Date().toISOString(),
     };
-    console.log('Audience rule payload', payload);
+    this.audienceRulesApi.saveRule(payload).subscribe({
+      next: (saved) => console.log('Audience rule saved', saved),
+      error: (err) => console.error('Failed to save audience rule', err),
+    });
   }
 
   private updateGroup(groupId: string, updater: (group: RuleGroup) => RuleGroup): void {
