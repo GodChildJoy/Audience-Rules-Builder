@@ -77,6 +77,7 @@ Frontend:
  3. Performance imporve like Memoize expensive computed values in the rule builder where needed (tree traversal can grow quickly).
  4. Accessibility polish.
  5. Cursor rules
+
 Backend:
  1. Swap the in-memory rules = [] in api/ for a database (Railway Postgres).
  2. Add backend tests for CRUD (or at least contract tests).
