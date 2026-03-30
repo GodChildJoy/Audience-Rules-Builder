@@ -69,3 +69,16 @@ flowchart TB
 - **Backend (Railway):** deploy the **`api/`** directory as a Node service (`npm start`). Set **`CORS_ORIGIN`** to your Vercel site URL so the browser can call the API.
 
 Step-by-step instructions, env vars, and troubleshooting (CORS, local prod builds) are in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
+## Improves in future
+Frontend:
+ 1. better saved rules list design with pagination.
+ 2. Implementing app-wide Error Management model component allow user have better experience.
+ 3. Performance imporve like Memoize expensive computed values in the rule builder where needed (tree traversal can grow quickly).
+ 4. Accessibility polish.
+Backend:
+ 1. Swap the in-memory rules = [] in api/ for a database (Railway Postgres).
+ 2. Add backend tests for CRUD (or at least contract tests).
+ 3. Add auth (even a simple API key) to prevent anyone from writing/evaluating arbitrary rules.
+ 4. Deploy SSR.
+ 5. GitHub Actions: run npm test and ng build --configuration development on PRs.
