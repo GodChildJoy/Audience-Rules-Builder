@@ -3,6 +3,10 @@ import { inject, Injectable, InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs';
 import type { RuleTreePayload } from './rule-builder.model';
 
+export interface EvaluateAudienceResponse {
+  matches: { name: string; email: string }[];
+}
+
 export const AUDIENCE_RULES_API_BASE_URL = new InjectionToken<string>('AUDIENCE_RULES_API_BASE_URL', {
   providedIn: 'root',
   factory: () => 'http://localhost:3000',
@@ -36,5 +40,9 @@ export class AudienceRulesApiService {
 
   deleteRule(id: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/rules/${encodeURIComponent(id)}`);
+  }
+
+  evaluateRule(body: { root: RuleTreePayload.Group }): Observable<EvaluateAudienceResponse> {
+    return this.http.post<EvaluateAudienceResponse>(`${this.baseUrl}/evaluate`, body);
   }
 }
