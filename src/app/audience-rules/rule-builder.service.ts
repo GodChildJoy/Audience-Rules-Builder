@@ -1,4 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
+import { finalize } from 'rxjs';
 import { AudienceRulesApiService } from './audience-rules-api.service';
 import {
   FIELD_OPTIONS,
@@ -26,6 +27,8 @@ export class RuleBuilderService {
 
   readonly root = signal<RuleGroup>(this.createInitialRoot());
   readonly showValidation = signal(false);
+  /** True while a save request is in flight (after validation passes). */
+  readonly saveInProgress = signal(false);
   readonly isValid = computed(() => this.validateGroup(this.root()));
   readonly hasValidationErrors = computed(() => this.showValidation() && !this.isValid());
 
@@ -127,19 +130,26 @@ export class RuleBuilderService {
     if (!this.isValid()) {
       return;
     }
+    if (this.saveInProgress()) {
+      return;
+    }
     const name = `Audience Rule ${crypto.randomUUID()}`;
     const payload = {
       name,
       root: toMinimalRuleGroup(this.root()),
       savedAt: new Date().toISOString(),
     };
-    this.audienceRulesApi.saveRule(payload).subscribe({
-      next: (saved) => {
-        console.log('Audience rule saved', saved);
-        this.audienceRulesApi.notifyRuleSaved();
-      },
-      error: (err) => console.error('Failed to save audience rule', err),
-    });
+    this.saveInProgress.set(true);
+    this.audienceRulesApi
+      .saveRule(payload)
+      .pipe(finalize(() => this.saveInProgress.set(false)))
+      .subscribe({
+        next: (saved) => {
+          console.log('Audience rule saved', saved);
+          this.audienceRulesApi.notifyRuleSaved();
+        },
+        error: (err) => console.error('Failed to save audience rule', err),
+      });
   }
 
   private updateGroup(groupId: string, updater: (group: RuleGroup) => RuleGroup): void {

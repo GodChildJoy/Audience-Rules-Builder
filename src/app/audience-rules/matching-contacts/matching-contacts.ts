@@ -1,11 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
+import { LoadingStateComponent } from '../../shared/loading-state/loading-state';
 import { AudienceRulesApiService } from '../audience-rules-api.service';
 import { RuleBuilderService } from '../rule-builder.service';
 import { toMinimalRuleGroup } from '../rule-builder.model';
 
 @Component({
   selector: 'app-matching-contacts',
-  imports: [],
+  imports: [LoadingStateComponent],
   templateUrl: './matching-contacts.html',
 })
 export class MatchingContacts {
@@ -23,6 +24,7 @@ export class MatchingContacts {
       return;
     }
     this.error.set(null);
+    this.matches.set(null);
     this.loading.set(true);
     const root = toMinimalRuleGroup(this.ruleBuilder.root());
     this.api.evaluateRule({ root }).subscribe({

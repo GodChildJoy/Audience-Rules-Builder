@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { AudienceRulesApiService, type SavedAudienceRule } from '../audience-rules-api.service';
+import { LoadingStateComponent } from '../../shared/loading-state/loading-state';
 import { RulePayloadView } from '../rule-payload-view/rule-payload-view';
 import type { RuleTreePayload } from '../rule-builder.model';
 
@@ -12,7 +13,7 @@ function countConditionsInGroup(group: RuleTreePayload.Group): number {
 
 @Component({
   selector: 'app-audience-rules-list',
-  imports: [DatePipe, RulePayloadView],
+  imports: [DatePipe, LoadingStateComponent, RulePayloadView],
   templateUrl: './audience-rules-list.html',
 })
 export class AudienceRulesList {

@@ -9,6 +9,7 @@ import { RuleBuilderService } from '../rule-builder.service';
 export class AudienceRulesHeader {
   private readonly ruleBuilder = inject(RuleBuilderService);
   protected readonly hasValidationErrors = this.ruleBuilder.hasValidationErrors;
+  protected readonly saveInProgress = this.ruleBuilder.saveInProgress;
 
   protected onSave(): void {
     this.ruleBuilder.saveRule();

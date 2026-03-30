@@ -1,3 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+
+@keyframes app-loading-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: -100% 50%;
+  }
+}
+
+.app-loading-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgb(229 231 235 / 0.85) 0%,
+    rgb(243 244 246) 45%,
+    rgb(249 250 251) 50%,
+    rgb(243 244 246) 55%,
+    rgb(229 231 235 / 0.85) 100%
+  );
+  background-size: 220% 100%;
+  animation: app-loading-shimmer 1.7s ease-in-out infinite;
+}

@@ -16,7 +16,7 @@
 
   <div class="bg-gray-50/80 px-6 py-6">
     @if (loading()) {
-      <p class="text-sm text-gray-500">Loading saved rules…</p>
+      <app-loading-state variant="list" message="Loading saved rules…" />
     } @else if (!error() && displayRules().length > 0) {
       <ul class="space-y-3">
         @for (rule of displayRules(); track rule.id) {
@@ -36,11 +36,19 @@
               </div>
               <button
                 type="button"
-                class="shrink-0 rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-400 disabled:cursor-not-allowed disabled:opacity-50"
+                class="inline-flex shrink-0 items-center justify-center gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-400 disabled:cursor-not-allowed disabled:opacity-50"
                 [disabled]="isDeleting(rule)"
                 (click)="deleteRule(rule, $event)"
               >
-                {{ isDeleting(rule) ? 'Deleting…' : 'Delete' }}
+                @if (isDeleting(rule)) {
+                  <span
+                    class="inline-block size-3.5 shrink-0 animate-spin rounded-full border-2 border-red-200 border-t-red-600"
+                    aria-hidden="true"
+                  ></span>
+                  <span>Deleting…</span>
+                } @else {
+                  <span>Delete</span>
+                }
               </button>
             </div>
             <details class="group">

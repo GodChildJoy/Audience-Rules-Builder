@@ -1,0 +1,137 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  --nf-coral: #ff6b4a;
+  --nf-mint: #5ce1c6;
+  --nf-ink: #0a0c10;
+}
+
+.nf-bg-blob {
+  animation: nf-float 14s ease-in-out infinite;
+  filter: blur(80px);
+}
+
+.nf-bg-blob--2 {
+  animation-delay: -4s;
+  animation-duration: 18s;
+}
+
+.nf-code {
+  animation: nf-float 6s ease-in-out infinite;
+}
+
+.nf-glitch {
+  position: relative;
+  animation: nf-skew 5s ease-in-out infinite;
+}
+
+.nf-glitch::before,
+.nf-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font: inherit;
+  pointer-events: none;
+}
+
+.nf-glitch::before {
+  color: var(--nf-mint);
+  animation: nf-glitch-a 2.5s infinite linear alternate-reverse;
+  clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+}
+
+.nf-glitch::after {
+  color: var(--nf-coral);
+  animation: nf-glitch-b 3s infinite linear alternate-reverse;
+  clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+}
+
+.nf-scan {
+  animation: nf-scan 8s linear infinite;
+}
+
+@keyframes nf-float {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(3%, -4%) scale(1.05);
+  }
+  66% {
+    transform: translate(-4%, 2%) scale(0.95);
+  }
+}
+
+@keyframes nf-skew {
+  0%,
+  100% {
+    transform: skewX(0deg);
+  }
+  20% {
+    transform: skewX(-0.5deg);
+  }
+  40% {
+    transform: skewX(0.3deg);
+  }
+  60% {
+    transform: skewX(-0.2deg);
+  }
+}
+
+@keyframes nf-glitch-a {
+  0% {
+    transform: translate(0);
+    opacity: 0.85;
+  }
+  20% {
+    transform: translate(-3px, 2px);
+    opacity: 0.9;
+  }
+  40% {
+    transform: translate(2px, -1px);
+  }
+  100% {
+    transform: translate(0);
+    opacity: 0.85;
+  }
+}
+
+@keyframes nf-glitch-b {
+  0% {
+    transform: translate(0);
+    opacity: 0.8;
+  }
+  25% {
+    transform: translate(4px, -2px);
+  }
+  50% {
+    transform: translate(-2px, 3px);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(0);
+    opacity: 0.8;
+  }
+}
+
+@keyframes nf-scan {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.15;
+  }
+  90% {
+    opacity: 0.15;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}

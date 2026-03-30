@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, InjectionToken, signal } from '@angular/core';
 import { Observable } from 'rxjs';
+import { audienceRulesApiBaseUrl } from '../../audience-rules-api.base-url';
 import type { RuleTreePayload } from './rule-builder.model';
 
 export interface EvaluateAudienceResponse {
@@ -9,7 +10,7 @@ export interface EvaluateAudienceResponse {
 
 export const AUDIENCE_RULES_API_BASE_URL = new InjectionToken<string>('AUDIENCE_RULES_API_BASE_URL', {
   providedIn: 'root',
-  factory: () => 'http://localhost:3000',
+  factory: () => audienceRulesApiBaseUrl(),
 });
 
 export interface CreateAudienceRuleRequest {

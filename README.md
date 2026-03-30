@@ -1,59 +1,71 @@
-# AudienceRulesBuilder
+# Audience Rules Builder
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.4.
+Angular app for building audience targeting rules as a nested **AND/OR** tree of field conditions.
 
-## Development server
+## Rule data model
 
-To start a local development server, run:
+Rules are trees. Each **group** combines its direct **conditions** and **nested groups** with a single logic operator:
 
-```bash
-ng serve
+| Property   | Meaning |
+| ---------- | ------- |
+| `logic`    | `AND` — every direct child must match; `OR` — at least one direct child must match. |
+| `conditions` | Flat list of predicates on audience fields (`field` + `operator` + `value`). |
+| `groups`   | Nested rule groups with the same shape (unbounded depth). |
+
+### Field catalog
+
+Supported fields and their operators live in `FIELD_CATALOG` in `rule-builder.model.ts` (exposed as `FIELD_OPTIONS`). Each field has its own operator set—for example `country` / `plan` use *is* / *is not*, `purchaseCount` uses numeric comparisons, `signupDate` uses *before* / *after* / *on*.
+
+### Two representations
+
+The app uses two TypeScript shapes for the same conceptual tree:
+
+1. **Editor tree** (`RuleGroup` / `RuleCondition`)  
+   Used in the UI. Each group and condition has a stable **`id`** (UUID) so rows and nested cards can be updated, removed, and patched without re-keying the whole tree.
+
+2. **Serializable payload** (`RuleTreePayload.Group` / `RuleTreePayload.Condition`)  
+   Used for **API requests and storage**: same nested structure, but **no ids**—only `logic`, `conditions`, and `groups`.  
+   `toMinimalRuleGroup()` maps an editor tree to this payload by stripping ids and recursing into nested groups.
+
+Saved rules from the API (`SavedAudienceRule`) include metadata (`id`, `name`, `savedAt`, `storedAt`) plus a `root` that is a `RuleTreePayload.Group`. Evaluate and save endpoints consume the minimal `root` shape.
+
+### Validation (high level)
+
+The builder enforces that each condition has a non-empty value, operators match the field, numeric/date fields parse correctly, and **each field appears at most once across the whole tree** (so the catalog acts like a set of dimensions, not repeated keys).
+
+## Component relationships
+
+The shell is **`App`** → **`AudienceRulesBuilder`**, which composes the header, the editable rule tree, matching preview, and the saved-rules list. **`RuleGroup`** is recursive: each group renders a **`LogicToggle`**, one **`RuleConditionRow`** per condition, and nested **`RuleGroup`** instances. **`AudienceRulesList`** embeds **`RulePayloadView`** inside each saved rule’s details; **`RulePayloadView`** is also recursive for nested groups in read-only form.
+
+```mermaid
+flowchart TB
+  App["App (app-root)"]
+  Builder["AudienceRulesBuilder"]
+  Header["AudienceRulesHeader"]
+  RG["RuleGroup"]
+  LT["LogicToggle"]
+  Row["RuleConditionRow"]
+  MC["MatchingContacts"]
+  List["AudienceRulesList"]
+  RPV["RulePayloadView"]
+
+  App --> Builder
+  Builder --> Header
+  Builder --> RG
+  Builder --> MC
+  Builder --> List
+  RG --> LT
+  RG --> Row
+  RG --> RG
+  List --> RPV
+  RPV --> RPV
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+**Shared services** (not shown in the diagram): components inject **`RuleBuilderService`** for editor state (tree, validation, save) and **`AudienceRulesApiService`** for HTTP (`/rules`, `/evaluate`). The list refetches when the API service’s saved-rules version bumps after a successful save.
 
-## Code scaffolding
+## Deployment (Vercel + Railway)
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- **Frontend (Vercel):** static Angular browser build via `vercel.json` and `npm run build:vercel`. Set **`AUDIENCE_RULES_API_URL`** in Vercel to your API origin (no trailing slash); it is injected at build time.
+- **Backend (Railway):** deploy the **`api/`** directory as a Node service (`npm start`). Set **`CORS_ORIGIN`** to your Vercel site URL so the browser can call the API.
 
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Step-by-step instructions, env vars, and troubleshooting (CORS, local prod builds) are in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).

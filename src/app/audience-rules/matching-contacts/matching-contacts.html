@@ -12,11 +12,19 @@
       }
       <button
         type="button"
-        class="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
+        class="inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
         (click)="preview()"
         [disabled]="loading()"
       >
-        {{ loading() ? 'Loading…' : 'Preview matches' }}
+        @if (loading()) {
+          <span
+            class="inline-block size-3.5 shrink-0 animate-spin rounded-full border-2 border-gray-200 border-t-blue-600"
+            aria-hidden="true"
+          ></span>
+          <span>Loading…</span>
+        } @else {
+          <span>Preview matches</span>
+        }
       </button>
     </div>
   </div>
@@ -25,7 +33,11 @@
     <p class="text-xs font-medium text-red-600">{{ error() }}</p>
   }
 
-  @if (matches() !== null && matches()!.length > 0) {
+  @if (loading()) {
+    <app-loading-state variant="chips" message="Fetching matches…" />
+  }
+
+  @if (!loading() && matches() !== null && matches()!.length > 0) {
     <div class="flex flex-wrap gap-2">
       @for (m of matches()!; track m.email) {
         <div

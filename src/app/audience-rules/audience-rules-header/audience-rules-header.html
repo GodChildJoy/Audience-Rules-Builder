@@ -9,9 +9,18 @@
   </div>
   <button
     type="button"
-    class="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+    class="inline-flex min-w-[7.5rem] items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-80"
     (click)="onSave()"
+    [disabled]="saveInProgress()"
   >
-    Save Rule
+    @if (saveInProgress()) {
+      <span
+        class="inline-block size-4 shrink-0 animate-spin rounded-full border-2 border-white/35 border-t-white"
+        aria-hidden="true"
+      ></span>
+      <span>Saving…</span>
+    } @else {
+      <span>Save Rule</span>
+    }
   </button>
 </header>
