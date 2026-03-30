@@ -1,7 +1,5 @@
 <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-  <header
-    class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 bg-white px-6 py-4"
-  >
+  <header class="border-b border-gray-200 bg-white px-6 py-4">
     <div>
       <h2 class="text-lg font-semibold tracking-tight text-gray-800">Saved rules</h2>
       @if (error()) {
@@ -14,14 +12,6 @@
         <p class="mt-1 text-xs text-gray-500">No saved rules yet. Save one from the builder above.</p>
       }
     </div>
-    <button
-      type="button"
-      class="inline-flex items-center gap-2 rounded-md border border-dashed border-gray-300 bg-gray-50 px-4 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:border-gray-400 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
-      (click)="refresh()"
-      [disabled]="loading()"
-    >
-      Refresh
-    </button>
   </header>
 
   <div class="bg-gray-50/80 px-6 py-6">

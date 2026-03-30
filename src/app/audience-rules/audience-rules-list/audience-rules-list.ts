@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { AudienceRulesApiService, type SavedAudienceRule } from '../audience-rules-api.service';
+import { AudienceRulesListRefreshService } from '../audience-rules-list-refresh.service';
 import { RulePayloadView } from '../rule-payload-view/rule-payload-view';
 import type { RuleTreePayload } from '../rule-builder.model';
 
@@ -17,6 +18,7 @@ function countConditionsInGroup(group: RuleTreePayload.Group): number {
 })
 export class AudienceRulesList {
   private readonly api = inject(AudienceRulesApiService);
+  private readonly savedRulesRefresh = inject(AudienceRulesListRefreshService);
 
   protected readonly rules = signal<SavedAudienceRule[]>([]);
   protected readonly loading = signal(true);
@@ -29,11 +31,10 @@ export class AudienceRulesList {
   );
 
   constructor() {
-    this.fetchRules();
-  }
-
-  protected refresh(): void {
-    this.fetchRules();
+    effect(() => {
+      this.savedRulesRefresh.version();
+      this.fetchRules();
+    });
   }
 
   protected conditionCount(rule: SavedAudienceRule): number {
