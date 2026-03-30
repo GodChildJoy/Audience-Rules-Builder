@@ -1,6 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { AudienceRulesApiService } from './audience-rules-api.service';
-import { AudienceRulesListRefreshService } from './audience-rules-list-refresh.service';
 import {
   FIELD_OPTIONS,
   createCondition,
@@ -24,7 +23,6 @@ export interface ConditionErrors {
 })
 export class RuleBuilderService {
   private readonly audienceRulesApi = inject(AudienceRulesApiService);
-  private readonly savedRulesListRefresh = inject(AudienceRulesListRefreshService);
 
   readonly root = signal<RuleGroup>(this.createInitialRoot());
   readonly showValidation = signal(false);
@@ -138,7 +136,7 @@ export class RuleBuilderService {
     this.audienceRulesApi.saveRule(payload).subscribe({
       next: (saved) => {
         console.log('Audience rule saved', saved);
-        this.savedRulesListRefresh.notifyRuleSaved();
+        this.audienceRulesApi.notifyRuleSaved();
       },
       error: (err) => console.error('Failed to save audience rule', err),
     });

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, InjectionToken } from '@angular/core';
+import { inject, Injectable, InjectionToken, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import type { RuleTreePayload } from './rule-builder.model';
 
@@ -29,6 +29,16 @@ export interface SavedAudienceRule extends CreateAudienceRuleRequest {
 export class AudienceRulesApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = inject(AUDIENCE_RULES_API_BASE_URL);
+
+  private readonly savedRulesListGeneration = signal(0);
+
+  /** Read in an effect to reload the saved-rules list when this changes. */
+  readonly savedRulesListVersion = this.savedRulesListGeneration.asReadonly();
+
+  /** Call after a rule is persisted so the list UI can refetch. */
+  notifyRuleSaved(): void {
+    this.savedRulesListGeneration.update((n) => n + 1);
+  }
 
   listRules(): Observable<SavedAudienceRule[]> {
     return this.http.get<SavedAudienceRule[]>(`${this.baseUrl}/rules`);
