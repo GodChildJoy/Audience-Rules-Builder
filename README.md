@@ -72,6 +72,7 @@ Step-by-step instructions, env vars, and troubleshooting (CORS, local prod build
 
 ## Improves in future
 Frontend:
+ 0. Cursor rules
  1. better saved rules list design with pagination.
  2. Implementing app-wide Error Management model component allow user have better experience.
  3. Performance imporve like Memoize expensive computed values in the rule builder where needed (tree traversal can grow quickly).
