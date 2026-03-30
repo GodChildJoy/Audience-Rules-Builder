@@ -144,8 +144,7 @@ export class RuleBuilderService {
       .saveRule(payload)
       .pipe(finalize(() => this.saveInProgress.set(false)))
       .subscribe({
-        next: (saved) => {
-          console.log('Audience rule saved', saved);
+        next: () => {
           this.audienceRulesApi.notifyRuleSaved();
         },
         error: (err) => console.error('Failed to save audience rule', err),
