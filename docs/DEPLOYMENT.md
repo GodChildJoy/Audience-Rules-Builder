@@ -61,6 +61,6 @@ If the browser shows CORS errors:
 - Railway **`CORS_ORIGIN`** must include the exact Vercel origin (`https://…`), scheme + host, no path.
 - After changing Railway env vars, redeploy or restart the service.
 
-## 5. Optional: SSR on Vercel
+## 5. SSR
 
-This repo builds the **browser** bundle for Vercel. The Express SSR entry in `src/server.ts` is not used by the provided `vercel.json`. To run full SSR on Vercel you would need a different adapter/output; the static SPA + Railway API is the supported path here.
+This deployment targets **static SPA** hosting on Vercel. Angular SSR entrypoints were removed, so the app is intended to be built and served as a browser bundle only.

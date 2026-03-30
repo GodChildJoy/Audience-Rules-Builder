@@ -30,14 +30,9 @@
             "define": {
               "__AUDIENCE_RULES_API_URL__": "''"
             },
-            "server": "src/main.server.ts",
-            "outputMode": "server",
             "security": {
               "allowedHosts": []
             },
-            "ssr": {
-              "entry": "src/server.ts"
-            }
           },
           "configurations": {
             "production": {

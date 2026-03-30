@@ -7,8 +7,7 @@
     "build": "ng build",
     "build:vercel": "node scripts/vercel-build.mjs",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "serve:ssr:Audience-Rules-Builder": "node dist/Audience-Rules-Builder/server/server.mjs"
+    "test": "ng test"
   },
   "private": true,
   "packageManager": "npm@10.8.2",
