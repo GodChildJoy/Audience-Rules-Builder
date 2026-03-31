@@ -83,4 +83,5 @@ Backend:
  2. Add backend tests for CRUD (or at least contract tests).
  3. Add auth (even a simple API key) to prevent anyone from writing/evaluating arbitrary rules.
  4. Deploy SSR.
- 5. GitHub Actions: run npm test and ng build --configuration development on PRs.
+ 5. Environment variables, Set secure response headers, compression, configure logging
+
