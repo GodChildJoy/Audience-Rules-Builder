@@ -6,20 +6,18 @@
       [attr.aria-label]="'Combine conditions with ' + group().logic"
     >
       <span
-        class="arb-logic-btn"
-        [class.text-blue-600]="group().logic === 'AND'"
-        [class.bg-white]="group().logic === 'AND'"
-        [class.shadow-sm]="group().logic === 'AND'"
-        [class.text-gray-500]="group().logic !== 'AND'"
+        [class]="
+          'arb-logic-btn ' +
+          (group().logic === 'AND' ? 'text-blue-600 bg-white shadow-sm' : 'text-gray-500')
+        "
       >
         AND
       </span>
       <span
-        class="arb-logic-btn"
-        [class.text-blue-600]="group().logic === 'OR'"
-        [class.bg-white]="group().logic === 'OR'"
-        [class.shadow-sm]="group().logic === 'OR'"
-        [class.text-gray-500]="group().logic !== 'OR'"
+        [class]="
+          'arb-logic-btn ' +
+          (group().logic === 'OR' ? 'text-blue-600 bg-white shadow-sm' : 'text-gray-500')
+        "
       >
         OR
       </span>

@@ -4,12 +4,8 @@
     <label class="sr-only" [for]="'field-' + condition().id">Field</label>
     <select
       class="arb-field-control"
-      [class.border-gray-300]="!showValidation() || !conditionErrors().field"
-      [class.focus:border-blue-500]="!showValidation() || !conditionErrors().field"
-      [class.focus:ring-blue-500]="!showValidation() || !conditionErrors().field"
-      [class.border-red-300]="showValidation() && !!conditionErrors().field"
-      [class.focus:border-red-500]="showValidation() && !!conditionErrors().field"
-      [class.focus:ring-red-500]="showValidation() && !!conditionErrors().field"
+      [class.arb-field-control--valid]="!showValidation() || !conditionErrors().field"
+      [class.arb-field-control--invalid]="showValidation() && !!conditionErrors().field"
       [id]="'field-' + condition().id"
       [value]="condition().field"
       (change)="onFieldChange($any($event.target).value)"
@@ -24,12 +20,8 @@
     <label class="sr-only" [for]="'op-' + condition().id">Operator</label>
     <select
       class="arb-field-control"
-      [class.border-gray-300]="!showValidation() || !conditionErrors().operator"
-      [class.focus:border-blue-500]="!showValidation() || !conditionErrors().operator"
-      [class.focus:ring-blue-500]="!showValidation() || !conditionErrors().operator"
-      [class.border-red-300]="showValidation() && !!conditionErrors().operator"
-      [class.focus:border-red-500]="showValidation() && !!conditionErrors().operator"
-      [class.focus:ring-red-500]="showValidation() && !!conditionErrors().operator"
+      [class.arb-field-control--valid]="!showValidation() || !conditionErrors().operator"
+      [class.arb-field-control--invalid]="showValidation() && !!conditionErrors().operator"
       [id]="'op-' + condition().id"
       [value]="condition().operator"
       (change)="onOperatorChange($any($event.target).value)"
@@ -45,12 +37,8 @@
     @if (isDateField()) {
       <input
         class="arb-field-control"
-        [class.border-gray-300]="!showValidation() || !conditionErrors().value"
-        [class.focus:border-blue-500]="!showValidation() || !conditionErrors().value"
-        [class.focus:ring-blue-500]="!showValidation() || !conditionErrors().value"
-        [class.border-red-300]="showValidation() && !!conditionErrors().value"
-        [class.focus:border-red-500]="showValidation() && !!conditionErrors().value"
-        [class.focus:ring-red-500]="showValidation() && !!conditionErrors().value"
+        [class.arb-field-control--valid]="!showValidation() || !conditionErrors().value"
+        [class.arb-field-control--invalid]="showValidation() && !!conditionErrors().value"
         [id]="'val-' + condition().id"
         type="date"
         [value]="condition().value"
@@ -60,12 +48,8 @@
     } @else {
       <input
         class="arb-field-control"
-        [class.border-gray-300]="!showValidation() || !conditionErrors().value"
-        [class.focus:border-blue-500]="!showValidation() || !conditionErrors().value"
-        [class.focus:ring-blue-500]="!showValidation() || !conditionErrors().value"
-        [class.border-red-300]="showValidation() && !!conditionErrors().value"
-        [class.focus:border-red-500]="showValidation() && !!conditionErrors().value"
-        [class.focus:ring-red-500]="showValidation() && !!conditionErrors().value"
+        [class.arb-field-control--valid]="!showValidation() || !conditionErrors().value"
+        [class.arb-field-control--invalid]="showValidation() && !!conditionErrors().value"
         [id]="'val-' + condition().id"
         type="text"
         placeholder="Value"
