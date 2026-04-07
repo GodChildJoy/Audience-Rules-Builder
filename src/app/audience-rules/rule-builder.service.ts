@@ -232,12 +232,10 @@ export class RuleBuilderService {
   }
 
   private createInitialRoot(): RuleGroup {
-    const firstField = FIELD_OPTIONS[0]?.id ?? 'country';
-    const secondField = FIELD_OPTIONS[1]?.id ?? firstField;
     return {
       id: crypto.randomUUID(),
       logic: 'AND',
-      conditions: [createCondition(firstField), createCondition(secondField)],
+      conditions: [createCondition()],
       groups: [createRuleGroup(false)],
     };
   }
